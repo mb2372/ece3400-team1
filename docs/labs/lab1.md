@@ -86,10 +86,10 @@ Below is a video of the servo’s response to a change in potentiometer values:
 
 The duty cycle of the square wave corresponding to the PWM output is given by:
 |PWM (0-180)|Waveform|
-|-----------|---------|
-|0 | ![](images/lab1/0.jpg)|
-|90 | ![](images/lab1/90.jpg)|
-|180 | ![](images/lab1/180.jpg)|
+:-------------------------:|:-------------------------:
+0 | ![](images/lab1/0.jpg)
+90 | ![](images/lab1/90.jpg)
+180 | ![](images/lab1/180.jpg)
 
 
 
