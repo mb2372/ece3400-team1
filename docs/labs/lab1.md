@@ -1,7 +1,7 @@
 # Lab 1: Microcontroller
 
 ### Objectives
-* Learn how to use the various functionalities of the Arduino Uno and the Arduino IDE.
+* Learn how to use the various functionalities of the Arduino Uno, the Arduino IDE and GitHub.
 * Construct a simple functional Arduino program using multiple external components and the Arduino Uno.
 * Assemble our robot and have it perform a simple autonomous task
 
