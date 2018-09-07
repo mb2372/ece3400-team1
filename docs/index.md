@@ -1,6 +1,6 @@
 Meet our robot!
 
-![](/labs/images/lab1/home.jpg)
+<iframe width="640" height="480" src="https://www.youtube.com/embed/a-czcSevky4" frameborder="0" allowfullscreen></iframe>
 
 ### Contributors
  - Manhal Bouarada          [mb2372](mailto:mb2372@cornell.edu)
