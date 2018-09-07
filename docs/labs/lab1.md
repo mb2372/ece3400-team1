@@ -10,9 +10,8 @@
 
 **Team 2**: Jason, Beau
 
-### Blinking an internal LED
-**After downloading the Arduino IDE, we used the Blink example that can be accessed from File>>Examples>>01.Basics>>Blink to successfully blink the internal LED.
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=14P1Wfs-y9U
-" target="_blank"><img src="http://img.youtube.com/vi/14P1Wfs-y9U/0.jpg" 
-alt="TEST" width="240" height="180" border="10" /></a>
+1. Blinking an internal LED
+After downloading the Arduino IDE, we used the Blink example that can be accessed from File>>Examples>>01.Basics>>Blink to successfully blink the internal LED.
+https://youtu.be/14P1Wfs-y9U 
 
+<iframe src="https://drive.google.com/file/d/1FFnCMVXB3uL5w_JyO6gtMCxMXzA4gFII/view" width="640" height="480"></iframe>
