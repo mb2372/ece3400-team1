@@ -142,7 +142,7 @@ void loop() {
  servo1.write(90);
  servo2.write(90);
  delay(1000);
-```
+
 //move back for 2s
  servo1.write(180);
  servo2.write(0);
