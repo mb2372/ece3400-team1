@@ -129,7 +129,7 @@ The Arduino and breadboard are currently bound to the top of our baseboard using
 
 
 ## Driving your robot autonomously 
-After assembling our robot, we programmed it to move forward, backward, turn right by 90 degrees, and turn left by 90 degrees. All of these actions were separated by a one second pause. The turning time for 90 degrees was found by guess and check method.
+After assembling our robot, we programmed it to move forward, backward, turn right by 90 degrees, and turn left by 90 degrees. All of these actions were separated by a one second pause. The turning time for 90 degrees (referred to as duration in the code below) was found by guess and check method.
 The following code was used:
 ```cpp
 void loop() {
