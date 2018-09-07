@@ -37,7 +37,9 @@ void loop() {
 
 ## Reading the value of a potentiometer via the serial port
 The following diagram shows the connection of the potentiometer to the Arduino.
-![](images/lab1/2.jpg)  
+
+![](images/lab1/2.jpg){:height="480px" width="640px"}
+ 
 To read the analog value from the potentiometer, we first had to initialize the serial communication over USB by including the following code in setup(): 
 ```cpp
 Serial.begin(9600); // sets the data rate in bits per second (baud) for serial communication
@@ -56,7 +58,9 @@ Uploading and running the sketch on the Arduino and printing the analog values o
 
 ## Map the value of the potentiometer to the LED
 By connecting the LED to a PWM (Pulse Width Modulation) enabled pin (pin 9) on the Arduino we were able to map the potentiometer value to the LED. The following diagram shows the modified setup: 
-![](images/lab1/3.jpg) 
+
+![](images/lab1/3.jpg){:height="480px" width="640px"}
+ 
 To map the potentiometer value to the LED, we first scaled the sensor value from 0-1014 to 0-255 since the maximum duty cycle (the pin output is always set to high) for 255.
 We used the following function:
 ```cpp
@@ -67,13 +71,17 @@ We then wrote the variable input to the PWM pin:
 analogWrite(9, input);
 ```
 The following is the implemented circuit from the schematic.
-![](images/lab1/4.jpg)
+
+![](images/lab1/4.jpg){:height="480px" width="640px"}
+
 As we rotated the potentiometer, the LED changed brightness as shown in the following video:   
 <iframe width="640" height="480" src="https://www.youtube.com/embed/1LCnNCJd0IA" frameborder="0" allowfullscreen></iframe>
 
 ## Map the value of the potentiometer to the servo
 The Parallax Continuous Rotation Servos can rotate continuously over 360°. They take in PWM values between 0 and 180. If the value input is 90, the servo stops moving. At a value of 180, the servo is moving full speed in one direction, and at a value of 0 the servo is moving full speed in the opposite direction. Mapping the analog potentiometer values to the servo was done using a setup similar to the previous: 
-![](images/lab1/5.jpg)
+
+![](images/lab1/5.jpg){:height="480px" width="640px"}
+
 We first scaled 0-180 to the Servo PWM range of 0-180 using the map function:
 ```cpp
 int input=map(value, 0, 1014, 0, 255);
@@ -87,9 +95,9 @@ Below is a video of the servo’s response to a change in potentiometer values:
 <iframe width="640" height="480" src="https://www.youtube.com/embed/0qEZ_O7TYYA" frameborder="0" allowfullscreen></iframe>
 
 The duty cycle of the square wave corresponding to the PWM output is given by:
-* 0: ![](images/lab1/0.jpg)
-* 90: ![](images/lab1/90.jpg)
-* 180: ![](images/lab1/180.jpg)
+* 0: ![](images/lab1/0.jpg){:height="480px" width="640px"}
+* 90: ![](images/lab1/90.jpg){:height="480px" width="640px"}
+* 180: ![](images/lab1/180.jpg){:height="480px" width="640px"}
 
 
 
