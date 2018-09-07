@@ -116,16 +116,16 @@ The duty cycle of the square wave corresponding to the PWM output is given by:
 ## Assemble your robot
 Looking at sample robots from past years, we assembled the necessary materials to construct the robot.
 
-![](images/lab1/7.jpg)
+![](images/lab1/7.jpg){:height="480px" width="480px"}
 
 We then attached the two servos to mounts, and then attached the mounts to the main baseboard. 
 
-![](images/lab1/8.jpg)
+![](images/lab1/8.jpg){:height="480px" width="480px"}
 
 Afterwards, we attached wheels that fit well with the servos onto the robot.
 We then attached the front wheel to the baseboard.
 The Arduino and breadboard are currently bound to the top of our baseboard using rubber bands. The battery pack is placed beneath the baseboard. 
-![](images/lab1/9.jpg)
+![](images/lab1/9.jpg){:height="480px" width="480px"}
 
 
 ## Driving your robot autonomously 
