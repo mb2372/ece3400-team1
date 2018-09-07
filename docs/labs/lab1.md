@@ -136,7 +136,7 @@ void loop() {
 //move forward for 2s
  servo1.write(0);//clockwise
  servo2.write(180);//counterclockwise
- delay(3000);
+ delay(2000);
 
 //stop for 1s
  servo1.write(90);
