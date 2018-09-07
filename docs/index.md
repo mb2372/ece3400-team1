@@ -1,6 +1,6 @@
 Meet our robot!
 
-![](./labs/images/lab1/9.jpg){:height="480px" width="640px"}
+![](/labs/images/lab1/9.jpg)
 
 ### Contributors
  - Manhal Bouarada          [mb2372](mailto:mb2372@cornell.edu)
