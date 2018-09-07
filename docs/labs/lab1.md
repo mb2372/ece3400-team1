@@ -102,7 +102,7 @@ Below is a video of the servo’s response to a change in potentiometer values:
 The duty cycle of the square wave corresponding to the PWM output is given by:
 * 0: 
 
-![](images/lab1/0.jpg){:height="640px" width="480px"}
+![](images/lab1/0.jpg){:height="700px" width="480px"}
 
 * 90: 
 
