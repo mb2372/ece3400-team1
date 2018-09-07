@@ -113,7 +113,7 @@ The duty cycle of the square wave corresponding to the PWM output is given by:
 ![](images/lab1/180.jpg){:height="480px" width="480px"}
 
 
-##Assemble your robot
+## Assemble your robot
 Looking at sample robots from past years, we assembled the necessary materials to construct the robot.
 
 (images/lab1/7.jpg){:height="200px" width="200px"}
