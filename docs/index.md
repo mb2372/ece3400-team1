@@ -1,3 +1,7 @@
+Meet our robot!
+
+![](images/lab1/9.jpg)
+
 ### Contributors
  - Manhal Bouarada          [mb2372](mailto:mb2372@cornell.edu)
  - Jason Russo              [jr826](mailto:jr826@cornell.edu)
