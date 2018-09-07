@@ -17,7 +17,9 @@ After downloading the Arduino IDE from [this link](https://www.arduino.cc/en/Mai
 ## Blinking an external LED
 We connected the ouptput pin 12 of the Arduino with the LED, in series with a 1.2 kΩ resistor. The longer leg of the LED is the positive lead (anode) and should be connected with the resistor (and thereby pin 12). The shorter, negative side should connect to GND of the arduino.
 The setup is shown in the picture below:
+
 ![](images/lab1/1.jpg){:height="480px" width="640px"}
+
 We then modified the existing Blink code to blink an external LED by setting the output pin to  the external pin (pin 12) rather than the built-in LED (defined as LED_BUILTIN) in setup() as follows: 
 ```cpp
 int pinnumber=12;
