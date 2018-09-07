@@ -84,6 +84,12 @@ delay(20);              // delay to ensure value is received by the servo
 Below is a video of the servo’s response to a change in potentiometer values:
 <iframe width="640" height="480" src="https://www.youtube.com/embed/0qEZ_O7TYYA" frameborder="0" allowfullscreen></iframe>
 
+The duty cycle of the square wave corresponding to the PWM output is given by:
+PWM (0-180) | Waveform
+------------ | -------------
+0 | ![](images/lab1/0.jpg)
+90 | ![](images/lab1/90.jpg)
+180 | ![](images/lab1/180.jpg)
 
 
 
