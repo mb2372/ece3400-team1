@@ -17,4 +17,4 @@ After downloading the Arduino IDE from [this link](https://www.arduino.cc/en/Mai
 ## Blinking an external LED
 We connected the ouptput pin 12 of the Arduino with the LED, in series with a 1.2 kΩ resistor. The longer leg of the LED is the positive lead (anode) and should be connected with the resistor (and thereby pin 12). The shorter, negative side should connect to GND of the arduino.
 The setup is shown in the picture below:
-![](./images/lab1/1.jpg)  
+![](images/lab1/1.jpg)  
