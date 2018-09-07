@@ -1,15 +1,3 @@
-```cpp
-	// Team name
-	#include <iostream>
-	#include <string>
-
-	int main()
-	{
-	  std::string name = ""; //FILLMEIN
-	  std::cout << "Hello, " << name << "!\n";
-	}
-```
-
 ### Contributors
  - Manhal Bouarada          [mb2372](mailto:mb2372@cornell.edu)
  - Jason Russo              [jr826](mailto:jr826@cornell.edu)
