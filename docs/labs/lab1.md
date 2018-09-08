@@ -87,7 +87,7 @@ The Parallax Continuous Rotation Servos can rotate continuously over 360°. They
 
 ![](images/lab1/5.jpg){:height="480px" width="640px"}
 
-We first scaled 0-180 to the Servo PWM range of 0-180 using the map function:
+We first scaled 0-1014 to the Servo PWM range of 0-180 using the map function:
 ```cpp
 int input=map(value, 0, 1014, 0, 180);
 ```
