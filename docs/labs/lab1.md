@@ -102,7 +102,7 @@ Below is a video of the servo’s response to a change in potentiometer values:
 The duty cycle of the square wave corresponding to the PWM output is given by:
 * 0: 
 
-![](images/lab1/0.jpg){:height="700px" width="480px"}
+![](images/lab1/0.jpg){:height="480px" width="480px"}
 
 * 90: 
 
@@ -116,7 +116,7 @@ The duty cycle of the square wave corresponding to the PWM output is given by:
 ## Assemble your robot
 Looking at sample robots from past years, we assembled the necessary materials to construct the robot.
 
-![](images/lab1/7.jpg){:height="480px" width="480px"}
+![](images/lab1/7.jpg){:height="640px" width="480px"}
 
 We then attached the two servos to mounts, and then attached the mounts to the main baseboard. 
 
