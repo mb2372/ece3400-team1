@@ -1,10 +1,5 @@
-#include <Servo.h>
-Servo servoLeft;
-Servo servoRight;
-
 void setup() {
-  servoLeft.attach(9);
-  servoRight.attach(10);
+  Serial.begin(9600);
 }
 
 void loop() {
