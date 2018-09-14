@@ -48,7 +48,7 @@ The following code details how we adjusted the robot's wheel speeds to stay on a
 
 Whenever the robot passed an intersection, all three sensors would detect the color white. For this specific test case, the robot would continue moving forward. In the figure eight case, the robot would have turned at the intersection.
 Below is a video of our robot following a straight line: 
-<iframe width="640" height="480" src="https://www.youtube.com/watch?v=X39Ky8AKowc&feature=youtu.be" frameborder="0" allowfullscreen></iframe>
+<iframe width="640" height="480" src="https://youtube.com/embed/X39Ky8AKowc" frameborder="0" allowfullscreen></iframe>
 
 ### Turning and Figure 8
 
@@ -82,7 +82,7 @@ if(counter%8<=3){
 We added a 50ms delay before each turn to make sure the robot doesn’t turn too soon. We turn the wheels in the same direction but at different speeds to make sure that the radius of rotation is large enough to avoid overcorrection of the path.
 
 Incrementing the counter after every corresponding turn made it possible to successfully complete the figure 8 as shown below:
-<iframe width="640" height="480" src="https://www.youtube.com/watch?v=9eWWnboFNME&feature=youtu.be" frameborder="0" allowfullscreen></iframe>
+<iframe width="640" height="480" src="https://youtube.com/embed/9eWWnboFNME" frameborder="0" allowfullscreen></iframe>
 
 ## Conclusion
 
