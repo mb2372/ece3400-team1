@@ -2,7 +2,7 @@
 
 ## Introduction
 
-To meet Milestone 1, the robot must be able to complete a figure eight. In order to accomplish this goal, the robot must be able to follow a white line, and turn at intersections. The main difficulties in this milestone were programming crisp turns. Most of our attention was focused on software this lab.
+To meet Milestone 1, the robot must be able to complete a figure eight. In order to accomplish this goal, the robot must be able to follow a white line and turn at intersections. The main difficulties in this milestone were programming crisp turns. Most of our attention was focused on software this lab.
 
 ## Hardware
 
@@ -11,7 +11,7 @@ Our main focus for this milestone was the implementation of our line following s
 An abstraction of the sensor setup is shown below:
 ![](images/milestone1images/sensor_diagram.jpg){:height="480px" width="640px"}
 
-The actual sesnor setup on the robot is shown below: 
+The actual sensor setup on the robot is shown below: 
 ![](images/milestone1images/sensor_on_robot.jpg){:height="480px" width="640px"}
 
 Our method for detection of these states is a threshold of the sensor values. We noticed that, while over a white line, the sensors would read a value well below 900 and while over the black mat, the sensors would read at about 1000. Based on this information, we set a threshold at 900. When either side sensor detected a value below this threshold, we knew that our robot was deviating from the line and so this was the robot’s cue to readjust its course. For detecting intersections, we looked for times when all three sensors were reading values below the threshold. This would signal our robot to turn either left or right. As far as which turn the robot should make, this will be handled more effectively when our robot can better detect obstacles as well as map where it has been already.
@@ -22,7 +22,7 @@ Our method for detection of these states is a threshold of the sensor values. We
 
 The first task is to ensure that our robot can autonomously follow a straight white line. This was done by reading values from the left, middle, and right sensors attached to the robot. Values read off by the various sensors relayed information about where the robot was in relation to the white line. 
 
-For instance, if the middle sensor detects the color white while the left and right sensors do not detect it, then this implies that the robot is centered on the white line and should continue going straight forward with both wheels turning at the same speed. If the right and middle sensors are reading the the color white while the left sensor does not, then this implies that the robot is too far to the left and needs to move towards the right to become centered again. To make the robot shift rightwards, we increased the speed of the left wheel compared to that of the right wheel. The same logic follows if the robot is too far to the right and needs to move more towards the left to become centered with the line again. To make the robot shift leftwards, we increased the speed of the right wheel compared to that of the left wheel.
+For instance, if the middle sensor detects the color white while the left and right sensors do not detect it, then this implies that the robot is centered on the white line and should continue going straight forward with both wheels turning at the same speed. If the right and middle sensors are reading the color white while the left sensor does not, then this implies that the robot is too far to the left and needs to move towards the right to become centered again. To make the robot shift rightwards, we increased the speed of the left wheel compared to that of the right wheel. The same logic follows if the robot is too far to the right and needs to move more towards the left to become centered with the line again. To make the robot shift leftwards, we increased the speed of the right wheel compared to that of the left wheel.
 
 The following code details how we adjusted the robot's wheel speeds to stay on a straight line:
 
