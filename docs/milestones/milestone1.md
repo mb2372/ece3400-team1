@@ -8,11 +8,8 @@ To meet Milestone 1, the robot must be able to complete a figure eight. In order
 
 Our main focus for this milestone was the implementation of our line following sensors. We chose to put three sensors in the front of our robot with the sensors in a line perpendicular to the line they are following. This way, the middle sensor is always over the line being followed while the two outer sensors, which are straddling the line, detect if the robot is straying from the line or if the robot has arrived at an intersection.
 
-An abstraction of the sensor setup is shown below:
-![](images/milestone1images/diagram.png){:height="480px" width="640px"}
-
 The actual sensor setup on the robot is shown below: 
-![](images/milestone1images/sensor_on_robot.jpg){:height="480px" width="640px"}
+![](images/milestone1images/sensor_on_robot.jpg){:height="640px" width="480px"}
 
 Our method for detection of these states is a threshold of the sensor values. We noticed that, while over a white line, the sensors would read a value well below 900 and while over the black mat, the sensors would read at about 1000. Based on this information, we set a threshold at 900. When either side sensor detected a value below this threshold, we knew that our robot was deviating from the line and so this was the robot’s cue to readjust its course. For detecting intersections, we looked for times when all three sensors were reading values below the threshold. This would signal our robot to turn either left or right. As far as which turn the robot should make, this will be handled more effectively when our robot can better detect obstacles as well as map where it has been already.
 
