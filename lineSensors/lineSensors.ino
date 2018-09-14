@@ -38,35 +38,54 @@ void loop() {
     servoRight.write(0);
     servoLeft.write(180);
     }
-  //right turn 
+  //right correction 
     if(lsensorR<threshold && lsensorL>=threshold && lsensorM>=threshold){
     servoRight.write(95);
+    servoLeft.write(102);
+    delay(100);
+    }
+  /*
+  //slight right correction 
+    if(lsensorR<threshold && lsensorL>=threshold && lsensorM<threshold){
+    servoRight.write(95);
     servoLeft.write(98);
-    delay(10);
     }
-  //left turn 
+   */
+  //left correction
     if(lsensorR>=threshold && lsensorL<threshold && lsensorM>=threshold){
-    servoRight.write(85);
-    servoLeft.write(88);
-    delay(10);
+    servoRight.write(83);
+    servoLeft.write(85);
+    delay(100);
     }
+   /*
+  //slight left correction
+    if(lsensorR>=threshold && lsensorL<threshold && lsensorM<threshold){
+    servoRight.write(83);
+    servoLeft.write(85);
+    }
+  */
   //all sensors are on black 
     if(lsensorR>=threshold && lsensorL>=threshold && lsensorM>=threshold){
     servoRight.write(0);
     servoLeft.write(180);
     }
+  
   //intersection detection (all sensors are white)
     if(lsensorR<threshold && lsensorL<threshold && lsensorM<threshold){
-      if(counter%8<=3){
-      delay(50);
-      servoRight.write(95);
-      servoLeft.write(110);
-      
+      if(lsensorR<threshold && lsensorL<threshold){
+        servoRight.write(0);
+        servoLeft.write(180);
+        delay(4);
         }
+      servoRight.write(150);
+      servoLeft.write(170);
+      delay(50);
+      /*
       else if(counter%8>3){
       delay(50);
       servoRight.write(70);
       servoLeft.write(85);
       }
+      */
 }
 }
