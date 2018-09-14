@@ -40,8 +40,8 @@ void loop() {
     }
   //right turn 
     if(lsensorR<threshold && lsensorL>=threshold && lsensorM>=threshold){
-    servoRight.write(95);
-    servoLeft.write(98);
+    servoRight.write(92);
+    servoLeft.write(95);
     delay(10);
     }
   //left turn 
@@ -57,11 +57,13 @@ void loop() {
     }
   //intersection detection (all sensors are white)
     if(lsensorR<threshold && lsensorL<threshold && lsensorM<threshold){
+      //right turn
       if(counter%8<=3){
       delay(50);
       servoRight.write(95);
       servoLeft.write(110);
         }
+      //left turn
       else if(counter%8>3){
       delay(50);
       servoRight.write(70);
