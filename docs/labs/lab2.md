@@ -12,5 +12,11 @@ To ensure that the FFT library provided was functioning correctly, we performed 
 
 
 ![](images/lab1/660hz_fft_prelab.jpg){:height="480px" width="640px"}
+
 ![](images/lab1/2khz_fft_prelab.jpg){:height="480px" width="640px"}
+
 ![](images/lab1/20khz_fft_prelab.jpg){:height="480px" width="640px"}
+
+
+## Optical Team: IR Circuit
+
