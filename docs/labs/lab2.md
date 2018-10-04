@@ -17,9 +17,15 @@ To ensure that the FFT library provided was functioning correctly, we performed 
 
 ![](images/lab2/20khz_fft_prelab.JPG){:height="400px" width="700px"}
 
-## Acoustic Team: Microphone Circuit
+## Acoustic Team
 
-## Optical Team: IR Circuit
+### FFT Analysis
+
+### Microphone Circuit
+
+
+## Optical Team
+
 ### FFT Analysis
 
 To perform Fast Fourier Transform (FFT) analysis, we needed to read in an analog signal through the Arduino. We cannot use the Arduino's analogRead() function that the microphone team used. The sampling rate for analogRead() is around 9kHz. However, this is not sufficiently fast enough for IR since we need to detect 6kHz signals, which requires a sampling rate of at least 12kHz by Nyquist’s sampling theorem. 
@@ -52,7 +58,11 @@ We started off by testing the amplifier circuit with the function generator, gen
 
 We also think that the reason this resistor is needed is because of the DC voltage bias we have applied to the non-inverting terminal of the amplifier. The voltage divider with the 100 kOhm resistors puts the non-inverting terminal at around 2.5V. This is done because the floor and ceiling voltages for the Arduino is 0V and 5V respectively. Since the signal that is being read is periodic with some amplitude, centering the waveform at 2.5V (the middle value between 0V and 5V) allows for the maximum of voltage swing for the signal without any clipping. An amplifier takes the difference between its two input terminals and outputs the magnified difference between the two. Since the non-inverting input is around 2.5V, the inverting input should also hover around 2.5V DC and then have the IR signal fluctuate around 2.5V to best utilize the gain (67kOhm/ 327Ohm) on our amplifier.
 
-A low pass filter is added at the output of the inverting amplifier. This is to decrease the magnitude of frequencies above 6kHz. This is especially useful for helping ignore the decoy robots that emit at 18kHz. The cutoff frequency is determined by f = 1/(2*\pi * R*C). For the circuit values we used, the cutoff frequency is 6.6kHz.
+A low pass filter is added at the output of the inverting amplifier. This is to decrease the magnitude of frequencies above 6kHz. This is especially useful for helping ignore the decoy robots that emit at 18kHz. The cutoff frequency is determined by
+
+![](images/lab2/cutoff_freq.JPG){:height="480px" width="640px"}
+
+For the circuit values we used, the cutoff frequency is 6.6kHz.
 
 Our next step was to connect our circuit with the phototransistor and read from the IR hat once more. We were able to consistently detect a usable signal from at least one square away.Here is our output signal with the IR hat one square away from the phototransistor:
 
@@ -65,3 +75,32 @@ This is the associated FFT once our circuit has the low pass filter on. The 6kHz
 Looking at the bins for the FFT after we added the low pass filter, we can also see that the peak value of the 6kHz signal is the highest while all other peak values have decreased. The first peak (6kHz) has value of 125, which is the IR frequency emitted by another robot. The second peak (12kHz) has value of 99. The third peak at 18 kHz is the frequency of the decoy. It has value of 57 which is less than half the value of the peak of a real robot. This is a significant difference and will make ignoring decoy robots much easier. 
 
 ![](images/lab2/6khz_bins_wFilter.JPG){:height="480px" width="640px"}
+
+The code below is used to distinguish between 660Hz and 6kHz signals and what to do given each signal. For the 660Hz signal, the robot starts moving forward since it denotes the start of the maze mapping. If the signal is 6kHz, then the robot does not continue forward. The robot will turn and move out of the way so that it does not collide with another robot.
+
+```cpp
+ while(1) { // reduces jitter
+    cli();  // UDRE interrupt slows this way down on arduino1.0
+    for (int i = 0 ; i < 512 ; i += 2) { // save 256 samples
+      while(!(ADCSRA & 0x10)); // wait for adc to be ready
+      ADCSRA = 0xf5; // restart adc
+      byte m = ADCL; // fetch adc data
+      byte j = ADCH;
+      int k = (j << 8) | m; // form into an int
+      k -= 0x0200; // form into a signed int
+      k <<= 6; // form into a 16b signed int
+      fft_input[i] = k; // put real data into even bins
+      fft_input[i+1] = 0; // set odd bins to 0
+    }
+    fft_window(); // window the data for better frequency response
+    fft_reorder(); // reorder the data before doing the fft
+    fft_run(); // process the data in the fft
+    fft_mag_log(); // take the output of the fft
+    sei();
+    if(fft_log_out[5]>120 || fft_log_out[6]>120){//the signal to start has sounded
+      moveForward();  
+    }
+    if(fft_log_out[43]>110){//detects another robot, avert it by turning direction
+      moveLeft();
+      }
+```
