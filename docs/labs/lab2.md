@@ -60,7 +60,7 @@ We also think that the reason this resistor is needed is because of the DC volta
 
 A low pass filter is added at the output of the inverting amplifier. This is to decrease the magnitude of frequencies above 6kHz. This is especially useful for helping ignore the decoy robots that emit at 18kHz. The cutoff frequency is determined by
 
-![](images/lab2/cutoff_freq.JPG){:height="480px" width="640px"}
+![](images/lab2/cutoff_freq.JPG){:height="120px" width="120px"}
 
 For the circuit values we used, the cutoff frequency is 6.6kHz.
 
