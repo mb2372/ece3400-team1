@@ -29,7 +29,7 @@ We used the fft_adc_serial script from the FFT (Fast Fourier Transform) library 
 ### IR Circuit
 We started with a simple phototransistor circuit as shown below:
 
-![](images/lab2/og_phototransistor_circuit.JPG){:height="640px" width="480px"}
+![](images/lab2/og_phototransistor_circuit.JPG){:height="320px" width="240px"}
 
 We then placed the IR hat near the phototransistor and measured the output using the oscilloscope. It became clear that we would need a form of amplification because the IR hat needed to be within a few centimeters of the phototransistor in order to get any kind of usable or readable output. 
 
