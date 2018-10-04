@@ -11,11 +11,11 @@ To perform Fast Fourier Transform (FFT) analysis, we used Open Music Labs Arduin
 To ensure that the FFT library provided was functioning correctly, we performed FFT analysis on signals at 660Hz, 2kHz, and 20kHz. We expected these to have peaks at different bins. The FFT analysis is shown below:
 
 
-![](images/lab1/660hz_fft_prelab.jpg){:height="480px" width="640px"}
+![](images/lab2/660hz_fft_prelab.jpeg){:height="480px" width="640px"}
 
-![](images/lab1/2khz_fft_prelab.jpg){:height="480px" width="640px"}
+![](images/lab2/2khz_fft_prelab.jpeg){:height="480px" width="640px"}
 
-![](images/lab1/20khz_fft_prelab.jpg){:height="480px" width="640px"}
+![](images/lab2/20khz_fft_prelab.jpeg){:height="480px" width="640px"}
 
 
 ## Optical Team: IR Circuit
