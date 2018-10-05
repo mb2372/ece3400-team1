@@ -69,7 +69,7 @@ The inverting amplifier design we used is very simple to build. The gain is dete
 
 Our process was to first test the amplifier using the signal generator. The arduino LED has been programmed to light up when 660Hz is input into analog pin A0. The video below shows that the LED starts to blink at 627Hz and stops lighting up at 700Hz. At these boundaries, the LED blinks. When the input frequency is 660Hz, the LED stays on. This is because these frequencies are in the two bins surrounding the 19th bin (the bin that 660Hz is located in) and are leaking into the 19th bin. This can be fixed with a hardware or software filter.
 
-<iframe width="640" height="480" src="https://youtube/AESvnncbm_w" frameborder="0" allowfullscreen></iframe>
+<iframe width="640" height="480" src="https://www.youtube.com/embed/AESvnncbm_w" frameborder="0" allowfullscreen></iframe>
 
 The next step was to actually test the amplifier and arduino with the microphone. The gain had to be changed a few times to fine tune what amplitude we output from the amplifier to the arduino. Below you can see the comparison in frequency spectrum when the 660Hz sounds turns on:
 
@@ -83,7 +83,7 @@ The amplifier outputs the below waveform. It has a peak to peak amplitude of 200
 
 Below is a video of the Arduino LED turning on in response to a 660Hz:
 
-<iframe width="640" height="480" src="https://youtube/zLbhqgMi_pw" frameborder="0" allowfullscreen></iframe>
+<iframe width="640" height="480" src="https://www.youtube.com/embed/zLbhqgMi_pw" frameborder="0" allowfullscreen></iframe>
 
 
 
