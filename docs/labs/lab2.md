@@ -50,6 +50,7 @@ void loop() {
       }
   }
 ```
+
 To make sure that our code worked as expected, we blink the Arduino built-in LED whenever the 660Hz signal is detected. 
 
 Since our sampling frequency was 8930 Hz and the number of samples was 256, each bin would have a size of approximately 8930/256=~35Hz. Therefore we expect the 18th bin to have the highest magnitude since 18*35=630Hz (the 18th bin would have frequencies in the range 630-665 Hz). However we determined that the bin that has the highest magnitude was bin 19 as shown below: 
@@ -63,6 +64,15 @@ This might be due to the fact that the real sampling frequency is lower than 893
 ![](images/labs/acoustic/amp_schematic.png){:height="400px" width="700px"}
 
 ![](images/labs/acoustic/amp_breadboard.png){:height="400px" width="700px"}
+
+The inverting amplifier design we used is very simple to build. The gain is determined by the feedback and input impedance. Zf = 33kΩ and Zin = 330Ω. Therefore the total gain: Av=ZfZIN=33k330=100. We DC biased the amplifier at 2.5V. This was accomplished with a voltage divider. Vout=R2R2+R1Vin=12Vin. Our Vdd is 5V (from the Arduino) so DC voltage at V+ is 2.5V. 
+
+Our process was to first test the amplifier using the signal generator. The arduino LED has been programmed to light up when 660Hz is input into analog pin A0. The video below shows that the LED starts to blink at 627Hz and stops lighting up at 700Hz. At these boundaries, the LED blinks. When the input frequency is 660Hz, the LED stays on. This is because these frequencies are in the two bins surrounding the 19th bin (the bin that 660Hz is located in) and are leaking into the 19th bin. This can be fixed with a hardware or software filter.
+
+[Insert video of arduino next to signal generator]
+
+The next step was to actually test the amplifier and arduino with the microphone. The gain had to be changed a few times to fine tune what amplitude we output from the amplifier to the arduino. Below you can see the comparison in frequency spectrum when the 660Hz sounds turns on:
+
 
 ### FFT Analysis
 
