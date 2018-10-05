@@ -61,9 +61,9 @@ This might be due to the fact that the real sampling frequency is lower than 893
 
 ### Acoustic Amplifier
 
-![](images/lab2/acoustic/amp_schematic.png){:height="400px" width="700px"}
+![](images/lab2/acoustic/amp_schematic.PNG){:height="400px" width="700px"}
 
-![](images/lab2/acoustic/amp_breadboard.jpg){:height="400px" width="700px"}
+![](images/lab2/acoustic/amp_breadboard.JPG){:height="400px" width="700px"}
 
 The inverting amplifier design we used is very simple to build. The gain is determined by the feedback and input impedance. Zf = 33kΩ and Zin = 330Ω. Therefore the total gain: Av=Zf/ZIN=33k330=100. We DC biased the amplifier at 2.5V. This was accomplished with a voltage divider. Vout=VinR2/(R2+R1)=.5Vin. Our Vdd is 5V (from the Arduino) so DC voltage at V+ is 2.5V. 
 
@@ -73,13 +73,13 @@ Our process was to first test the amplifier using the signal generator. The ardu
 
 The next step was to actually test the amplifier and arduino with the microphone. The gain had to be changed a few times to fine tune what amplitude we output from the amplifier to the arduino. Below you can see the comparison in frequency spectrum when the 660Hz sounds turns on:
 
-![](images/lab2/acoustic/freq_spec_NoNoise.jpg){:height="400px" width="700px"}
+![](images/lab2/acoustic/freq_spec_NoNoise.JPG){:height="400px" width="700px"}
 
-![](images/lab2/acoustic/freq_spec_WithNoise.jpg){:height="400px" width="700px"}
+![](images/lab2/acoustic/freq_spec_WithNoise.JPG){:height="400px" width="700px"}
 
 The amplifier outputs the below waveform. It has a peak to peak amplitude of 200mV.
 
-![](images/lab2/acoustic/waveform_660hz.jpg){:height="400px" width="700px"}
+![](images/lab2/acoustic/waveform_660hz.JPG){:height="400px" width="700px"}
 
 Below is a video of the Arduino LED turning on in response to a 660Hz:
 
