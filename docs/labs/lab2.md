@@ -61,11 +61,11 @@ This might be due to the fact that the real sampling frequency is lower than 893
 
 ### Working Amplifier
 
-![](images/labs/acoustic/amp_schematic.jpg){:height="400px" width="700px"}
+![](images/labs/acoustic/amp_schematic.png){:height="400px" width="700px"}
 
 ![](images/labs/acoustic/amp_breadboard.jpg){:height="400px" width="700px"}
 
-The inverting amplifier design we used is very simple to build. The gain is determined by the feedback and input impedance. Zf = 33kΩ and Zin = 330Ω. Therefore the total gain: Av=ZfZIN=33k330=100. We DC biased the amplifier at 2.5V. This was accomplished with a voltage divider. Vout=R2R2+R1Vin=12Vin. Our Vdd is 5V (from the Arduino) so DC voltage at V+ is 2.5V. 
+The inverting amplifier design we used is very simple to build. The gain is determined by the feedback and input impedance. Zf = 33kΩ and Zin = 330Ω. Therefore the total gain: Av=Zf/ZIN=33k330=100. We DC biased the amplifier at 2.5V. This was accomplished with a voltage divider. Vout=VinR2/(R2+R1)=.5Vin. Our Vdd is 5V (from the Arduino) so DC voltage at V+ is 2.5V. 
 
 Our process was to first test the amplifier using the signal generator. The arduino LED has been programmed to light up when 660Hz is input into analog pin A0. The video below shows that the LED starts to blink at 627Hz and stops lighting up at 700Hz. At these boundaries, the LED blinks. When the input frequency is 660Hz, the LED stays on. This is because these frequencies are in the two bins surrounding the 19th bin (the bin that 660Hz is located in) and are leaking into the 19th bin. This can be fixed with a hardware or software filter.
 
@@ -81,7 +81,7 @@ The amplifier outputs the below waveform. It has a peak to peak amplitude of 200
 
 ![](images/labs/acoustic/waveform_660hz.jpg){:height="400px" width="700px"}
 
-Below is a video of the arduino LED turning on in response to a 660Hz:
+Below is a video of the Arduino LED turning on in response to a 660Hz:
 
 [Insert video]
 
