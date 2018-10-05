@@ -19,12 +19,40 @@ To ensure that the FFT library provided was functioning correctly, we performed 
 
 ## Acoustic Team
 
-### FFT Analysis
+From the prelab we determined that AnalogRead() is sufficient to sample the 660Hz signal. From Arduino info page (https://playground.arduino.cc/Main/ShowInfo) we discovered that AnalogRead takes 111.987µs which gives a sampling frequency fs=1/(111.987e-6)=~8930Hz. This sampling frequency is enough for to detect the 660Hz signal since 8930>660*2>Nyquist frequency. 
+We then modified the fft_adc example code from the FFT library as follows: 
+void setup() {
+  Serial.begin(115200); // use the serial port
+  pinMode(LED_BUILTIN, OUTPUT);
+}
+int j=0;
+void loop() {
+    for (int i = 0 ; i < 512 ; i += 2) { // save 256 samples
+      fft_input[i] = analogRead(A0); // put real data into even bins
+      fft_input[i+1] = 0; // set odd bins to 0
+    }
+    fft_window(); // window the data for better frequency response
+    fft_reorder(); // reorder the data before doing the fft
+    fft_run(); // process the data in the fft
+    fft_mag_lin(); // take the output of the fft
+    Serial.println("Starting");
+    for (byte i=0; i<FFT_N/2;i++){
+      String str = "Bin Number ";
+      String str2 = str + i +": ";
+      Serial.println(str2);  
+      Serial.println(fft_lin_out[i]);
+      if(fft_lin_out[19]>=15){
+        digitalWrite(LED_BUILTIN, HIGH);
+        }
+      else{digitalWrite(LED_BUILTIN, LOW);}
+      }
+  }
 
-### Microphone Circuit
+To make sure that our code worked as expected, we blink the Arduino built-in LED whenever the 660Hz signal is detected. 
+
+Since our sampling frequency was 8930 Hz and the number of samples was 256, each bin would have a size of approximately 8930/256=~35Hz. Therefore we expect the 18th bin to have the highest magnitude since 18*35=630Hz (the 18th bin would have frequencies in the range 630-665 Hz). However we determined that the bin that has the highest magnitude was bin 19 as shown below: 
 
 
-## Optical Team
 
 ### FFT Analysis
 
