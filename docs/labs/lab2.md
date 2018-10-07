@@ -85,7 +85,7 @@ Below is a video of the Arduino LED turning on in response to a 660Hz:
 
 <iframe width="640" height="480" src="https://www.youtube.com/embed/zLbhqgMi_pw" frameborder="0" allowfullscreen></iframe>
 
-
+## Optical Team
 
 ### FFT Analysis
 
