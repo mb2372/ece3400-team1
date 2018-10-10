@@ -4,27 +4,57 @@ Servo servoRight; //right servo
 double lsensorR; //right line sensor
 double lsensorL; //left line sensor
 double lsensorM; //middle line sensor
-double threshold=300.0; //less than is white, greater than is black
+double threshold=900.0; //less than is white, greater than is black
+//servors
+//<90 is clockwise
+//>90 is counterclockwise
+
 
 void setup() {
   servoLeft.attach(9); //left servo
   servoRight.attach(10); //right servo 
+  pinMode(LED_BUILTIN,OUTPUT);
 }
-
+//a turn 90 to the right
+void right_turn(){
+  servoLeft.write(180);
+  servoRight.write(180);
+  delay(670);
+}
+//a turn 90 degrees to the left
+void left_turn(){
+  servoLeft.write(0);
+  servoRight.write(0);
+  delay(670);
+}
+//correction, not a turn
 void slight_right(){
-  
+    servoRight.write(95);
+    servoLeft.write(98);
+    delay(100);
 }
-
+//correction, not a turn
 void hard_right(){
-  
+   servoRight.write(95);
+   servoLeft.write(102);
+   delay(100);
 }
-
+//correction, not a turn
 void slight_left(){
-  
+  servoRight.write(83);
+  servoLeft.write(85);
+  delay(100);
+}
+//correction, not a turn
+void hard_left(){
+  servoRight.write(79);
+  servoLeft.write(85);
+  delay(100);
 }
 
-void hard_left(){
-  
+void forward(){
+  servoRight.write(0);
+  servoLeft.write(180);  
 }
 
 
@@ -33,6 +63,7 @@ void loop() {
   lsensorR = analogRead(A0);
   lsensorL = analogRead(A1);
   lsensorM = analogRead(A2);
+
 
   //cases
   /*
@@ -47,43 +78,46 @@ void loop() {
   WWB: slight left  
   */
 
+
   //intersection detection (back sensors are white)
-    if(lsensorR<threshold && lsensorL<threshold){
-      servoRight.write(150);
-      servoLeft.write(170);
-      delay(50);
+    if(lsensorR<threshold && lsensorL<threshold && lsensorM<threshold){
+      //servoLeft.write(90);
+      //servoRight.write(90);
+      //delay(10);
+      forward();
+      delay(240);
+      left_turn();
     }
+
+    else{
+      digitalWrite(LED_BUILTIN, HIGH);
+      
+      //hard right correction: right is white, left and middle are black
+      if(lsensorR<threshold && lsensorL>=threshold && lsensorM>=threshold){
+        hard_right();
+      }
+    //slight right correction: right is white, left is black, middle is white
+      else if(lsensorR<threshold && lsensorL>=threshold && lsensorM<threshold){
+          slight_right();
+      }
+    //left correction: left is white and middle and right are black
+      else if(lsensorR>=threshold && lsensorL<threshold && lsensorM>=threshold){
+        hard_left();
+      }
+     //slight left correction: left and middle are white and right is black
+      else if(lsensorR>=threshold && lsensorL<threshold && lsensorM<threshold){
+        slight_left();
+      }
+        //move forward:right is black, left is black
+      else if(lsensorR>=threshold && lsensorL>=threshold && lsensorM<threshold){
+        forward();
+      }
+      digitalWrite(LED_BUILTIN, LOW);
+      
+   }
+
+    
   
-  //move forward:right is black, left is black
-    if(lsensorR>=threshold && lsensorL>=threshold){
-    servoRight.write(0);
-    servoLeft.write(180);
-    }
-  
-  //hard right correction: right is white, left and middle are black
-    if(lsensorR<threshold && lsensorL>=threshold && lsensorM>=threshold){
-    servoRight.write(95);
-    servoLeft.write(102);
-    delay(100);
-    }
-  //slight right correction: right is white, left is black, middle is white
-    if(lsensorR<threshold && lsensorL>=threshold && lsensorM<threshold){
-    servoRight.write(95);
-    servoLeft.write(98);
-    delay(100);
-    }
-  //left correction: left is white and middle and right are black
-    if(lsensorR>=threshold && lsensorL<threshold && lsensorM>=threshold){
-    servoRight.write(79);
-    servoLeft.write(85);
-    delay(100);
-    }
-   //slight left correction: left and middle are white and right is black
-    if(lsensorR>=threshold && lsensorL<threshold && lsensorM<threshold){
-    servoRight.write(83);
-    servoLeft.write(85);
-    delay(100);
-    }
   
 }
 
