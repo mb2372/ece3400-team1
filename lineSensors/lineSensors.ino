@@ -27,7 +27,7 @@ void setup() {
   //E AND S2 ARE ALWAYS LOW FOR MUX TO WORK
 //      S1     S0      CHANNEL
 //      L      L         A0            
-//      L       H        A1            
+//      L      H         A1            
 //      H      L         A2       
   pinMode(S0,OUTPUT);//S0
   pinMode(S1,OUTPUT);//S1
@@ -39,21 +39,21 @@ void setup() {
 
 
 //method for wall detecting
-void wall_detect(){
-  //THIS IS NOT DONE YET. 
-  //CURRENTLY READS ALL THREE WALL SENSORS AND STORES INTO OUTPUT VARIABLES
-  //TODO: COMPARE THESE WALL DISTANCE VALUES AND MAKE A DECISION ON WHICH DIRECTION TO MOVE AKA WHICH WALL SENSORS ARE HIGH AND LOW AND DO WE GO L,R OR FORWARD
-  
+void left_wall_detect(){
   //selecting A0, Low Low
   digitalWrite(S1, LOW);
   digitalWrite(S0, LOW);
   int outA0 = analogRead(A5);
   Serial.println("channel input A0: "+outA0);
+}
+void right_wall_detect(){
   //selecting A1, Low High
   digitalWrite(S1, LOW);
   digitalWrite(S0, HIGH);
   int outA1 = analogRead(A5);
   Serial.println("channel input A1: "+outA1);
+}
+void front_wall_detect(){
   //selecting A2, High Low
   digitalWrite(S1,HIGH);
   digitalWrite(S0,LOW);
@@ -61,6 +61,7 @@ void wall_detect(){
   Serial.println("channel input A2: "+outA2);
 }
 
+//TURNING METHODS
 //a turn 90 to the right
 void right_turn(){
   servoLeft.write(180);
@@ -109,7 +110,6 @@ void loop() {
   lsensorR = analogRead(A0);
   lsensorL = analogRead(A1);
   lsensorM = analogRead(A2);
-
 
   //cases for line following and turning
   /*
@@ -169,9 +169,5 @@ void loop() {
       digitalWrite(LED_BUILTIN, LOW);
       
    }
-
-    
-  
-  
 }
 
