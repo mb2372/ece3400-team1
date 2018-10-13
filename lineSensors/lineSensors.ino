@@ -1,3 +1,5 @@
+#define LOG_OUT 1 // use the log output function
+#define FFT_N 256 // set to 256 point fft
 #include <Servo.h>
 #include <FFT.h> // include the FFT library
 
@@ -22,6 +24,10 @@ double r_wall_sensor; //right wall sensor
 double f_wall_sensor; //front wall sensor
 double wall_threshold=150.0;//less is no wall, > is wall
 
+//IR threshold
+double ir_sensor;//IR sensor
+double ir_threshold = 110.0;//less than is no IR from robot, greater than is IR from robot
+
 //initializing select pins for the mux with wall sensors
 int S0 = 7;//pin 7 is S0
 int S1 = 6;//pin 6 is S1
@@ -34,7 +40,9 @@ void setup() {
   pinMode(S0,OUTPUT);//input select signal 0 for mux
   pinMode(S1,OUTPUT);//input select signal 1 for mux
   pinMode(A5, INPUT);//output of the mux, input into the Arduino. Need a resistor for this
-  Serial.begin(9600);//for testing the wall output, can delete later
+  //Serial.begin(9600);//for testing the wall output, can delete later
+
+  
 }
 
 //TODO: METHOD FOR CHECKING MICROPHONE TO KNOW WHEN WE START
@@ -56,18 +64,51 @@ void left_wall_detect(){
   digitalWrite(S0, LOW);
   l_wall_sensor = analogRead(A5);
 }
+
 void right_wall_detect(){
   //setting mux select signals
   digitalWrite(S1, LOW);
   digitalWrite(S0, HIGH);
   r_wall_sensor = analogRead(A5);
 }
+
 void front_wall_detect(){
   //setting mux select signals
   digitalWrite(S1,HIGH);
   digitalWrite(S0,LOW);
   f_wall_sensor = analogRead(A5);
 }
+
+
+
+//METHOD FOR IR
+void ir_read(){
+  //FFT stuff for IR
+  Serial.begin(115200); // use the serial port
+  TIMSK0 = 0; // turn off timer0 for lower jitter
+  ADCSRA = 0xe5; // set the adc to free running mode
+  ADMUX = 0x40; // use adc0
+  DIDR0 = 0x01; // turn off the digital input for adc0
+   cli();  // UDRE interrupt slows this way down on arduino1.0
+    for (int i = 0 ; i < 512 ; i += 2) { // save 256 samples
+      while(!(ADCSRA & 0x10)); // wait for adc to be ready
+      ADCSRA = 0xf5; // restart adc
+      byte m = ADCL; // fetch adc data
+      byte j = ADCH;
+      int k = (j << 8) | m; // form into an int
+      k -= 0x0200; // form into a signed int
+      k <<= 6; // form into a 16b signed int
+      fft_input[i] = k; // put real data into even bins
+      fft_input[i+1] = 0; // set odd bins to 0
+    }
+    fft_window(); // window the data for better frequency response
+    fft_reorder(); // reorder the data before doing the fft
+    fft_run(); // process the data in the fft
+    fft_mag_log(); // take the output of the fft
+    sei();//interrupts
+    ir_sensor = fft_log_out[43];  
+}
+
 
 //METHODS FOR TURNING/MOVING FORWARD/STOPPING
 //a turn 90 to the right
@@ -76,47 +117,65 @@ void right_turn(){
   servoRight.write(180);
   delay(670);
 }
+
 //a turn 90 degrees to the left
 void left_turn(){
   servoLeft.write(0);
   servoRight.write(0);
   delay(670);
 }
+
 //correction, not a turn
 void slight_right(){
   servoRight.write(95);
   servoLeft.write(98);
   delay(100);
 }
+
 //correction, not a turn
 void hard_right(){
    servoRight.write(95);
    servoLeft.write(102);
    delay(100);
 }
+
 //correction, not a turn
 void slight_left(){
   servoRight.write(83);
   servoLeft.write(85);
   delay(100);
 }
+
 //correction, not a turn
 void hard_left(){
   servoRight.write(79);
   servoLeft.write(85);
   delay(100);
 }
+
 //move forward
 void forward(){
   servoRight.write(0);
   servoLeft.write(180);  
 }
+
 //stop
 void pause(){
   servoRight.write(90);
   servoLeft.write(90);  
 }
+
 void loop() {
+  //TODO: CONSTANTLY CHECK IR FOR OTHER ROBOTS
+  ir_read();
+  //if IR from another robot is detected
+  if(ir_sensor>=ir_threshold){
+    //for now just stop
+    pause();
+    delay(1000);  
+  }
+  
+  //read the line sensors
   lsensorR = analogRead(A0);
   lsensorL = analogRead(A1);
   lsensorM = analogRead(A2);
@@ -134,16 +193,16 @@ void loop() {
   WWB: slight left  
   */
 
-  //TODO: CONSTANTLY CHECK IR FOR OTHER ROBOTS
+  
 
   //intersection detection (back sensors are white)
     if(lsensorR<line_threshold && lsensorL<line_threshold && lsensorM<line_threshold){
       //TODO: STOP AND DO WALL DETECTION, THEN DECIDE HOW TO MOVE
-      //maybe set the two servos both to 90 to do a brief stop and analyze
+
       forward();
       delay(240);//bump the robot forward a little bit
       pause();//stops the robot from moving
-      //maybe have delay here??
+      //analyze the wall distances
       front_wall_detect();
       right_wall_detect();
       left_wall_detect();
@@ -157,14 +216,17 @@ void loop() {
    /*   if(l_wall_sensor>=wall_threshold && r_wall_sensor>=wall_threshold && f_wall_sensor<wall_threshold){
         forward();
       }*/
+      
       //no wall on the right and walls on left and front
       if(l_wall_sensor>=wall_threshold && r_wall_sensor<wall_threshold && f_wall_sensor>=wall_threshold){
         right_turn();
       }
+      
       //no wall on the left and walls on right and front
       if(l_wall_sensor<wall_threshold && r_wall_sensor>=wall_threshold && f_wall_sensor>=wall_threshold){
         left_turn();
       }
+      
       //walls everywhere. Uturn?
       if(l_wall_sensor>=wall_threshold && r_wall_sensor>=wall_threshold && f_wall_sensor>=wall_threshold){
         left_turn();
@@ -172,10 +234,11 @@ void loop() {
       }
       
      }
+     
     //not at an intersection: line following and correcting
     else{
       //just here for testing intersection vs not intersection. Can delete later
-      digitalWrite(LED_BUILTIN, HIGH);
+      //digitalWrite(LED_BUILTIN, HIGH);
       
       //hard right correction: right is white, left and middle are black
       if(lsensorR<line_threshold && lsensorL>=line_threshold && lsensorM>=line_threshold){
@@ -198,7 +261,7 @@ void loop() {
         forward();
       }
       //just here for testing intersection vs not intersection. Can delete later
-      digitalWrite(LED_BUILTIN, LOW);
+      //digitalWrite(LED_BUILTIN, LOW);
    }
 }
 
