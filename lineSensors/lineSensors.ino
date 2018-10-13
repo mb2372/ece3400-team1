@@ -1,8 +1,7 @@
 #define LOG_OUT 1 // use the log output function
 #define FFT_N 256 // set to 256 point fft
-#include <Servo.h>
 #include <FFT.h> // include the FFT library
-
+#include <Servo.h>
 //TODO: INCLUDE THE FFT FOR IR AND MICROPHONE. FIX FREE RUNNING MODE VS ANALOGREAD CONFLICT
 
 
@@ -33,7 +32,16 @@ int S1 = 6;//pin 6 is S1
 double ir_sensor;
 double ir_threshold = 110.0;
 
+unsigned int tempADCSRA=0;
+unsigned int tempTIMSK0=0;
+unsigned int tempADMUX=0;
+unsigned int tempDIDR0=0;
+
 void setup() {
+  tempADCSRA=ADCSRA;
+  tempTIMSK0=TIMSK0;
+  tempADMUX=ADMUX;
+  tempDIDR0=DIDR0;
   servoLeft.attach(9); //left servo
   servoRight.attach(10); //right servo 
   pinMode(LED_BUILTIN,OUTPUT);//testing when we are at intersection or correcting. This can be removed later  
@@ -131,15 +139,13 @@ void pause(){
 
 
 //---------------------------------------------------------------------------------------------------------------
-
 //METHOD FOR IR
 void ir_read(){
-  TIMSK0 = 0; // turn off timer0 for lower jitter
-  ADCSRA = 0xe5; // set the adc to free running mode
-  ADMUX = 0x40; // use adc0
-  DIDR0 = 0x01; // turn off the digital input for adc0
- 
-    cli();  // UDRE interrupt slows this way down on arduino1.0
+    TIMSK0 = 0; // turn off timer0 for lower jitter
+    ADCSRA = 0xe5; // set the adc to free running mode
+    ADMUX = 0x40; // use adc0
+    DIDR0 = 0x01; // turn off the digital input for adc0
+    //cli();  // UDRE interrupt slows this way down on arduino1.0
     for (int i = 0 ; i < 512 ; i += 2) { // save 256 samples
       while(!(ADCSRA & 0x10)); // wait for adc to be ready
       ADCSRA = 0xf5; // restart adc
@@ -155,24 +161,19 @@ void ir_read(){
     fft_reorder(); // reorder the data before doing the fft
     fft_run(); // process the data in the fft
     fft_mag_log(); // take the output of the fft
-    sei();//interrupts
+    //sei();//interrupts
     ir_sensor=fft_log_out[43];
-
-    
     //Serial.println("start");
     /*for (byte i = 0 ; i < FFT_N/2 ; i++) { 
       Serial.println("Bin Number: " + i);
       Serial.println(fft_log_out[i]); // send out the data
-      
     }*/
-    
+    ADCSRA = tempADCSRA;
+    TIMSK0 = tempTIMSK0; // turn off timer0 for lower jitter
+    ADMUX = tempADMUX; // use adc0: analog A0
+    DIDR0 = tempDIDR0;
 }
-
-
-
 //---------------------------------------------------------------------------------------------------------------
-
-
 
 void loop() {
   lsensorR = analogRead(A3);
@@ -182,10 +183,9 @@ void loop() {
   ir_read();
   //if IR detected, stop moving (for now)
   if(ir_sensor>=ir_threshold){
-    pause();
-    delay(1000);  
+    pause(); 
+    delay(1000); 
   }
-
   //cases for line following and turning
   /*
   LMR
