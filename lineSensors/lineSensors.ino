@@ -20,7 +20,7 @@ double line_threshold=900.0; //less than is white, greater than is black
 double l_wall_sensor; //left wall sensor
 double r_wall_sensor; //right wall sensor
 double f_wall_sensor; //front wall sensor
-double wall_threshold=250.0;//less is no wall, > is wall
+double wall_threshold=150.0;//less is no wall, > is wall
 
 //initializing select pins for the mux with wall sensors
 int S0 = 7;//pin 7 is S0
@@ -34,7 +34,7 @@ void setup() {
   pinMode(S0,OUTPUT);//input select signal 0 for mux
   pinMode(S1,OUTPUT);//input select signal 1 for mux
   pinMode(A5, INPUT);//output of the mux, input into the Arduino. Need a resistor for this
-  Serial.begin(9600);
+  Serial.begin(9600);//for testing the wall output, can delete later
 }
 
 //TODO: METHOD FOR CHECKING MICROPHONE TO KNOW WHEN WE START
@@ -142,15 +142,21 @@ void loop() {
       //maybe set the two servos both to 90 to do a brief stop and analyze
       forward();
       delay(240);//bump the robot forward a little bit
-      pause();
+      pause();//stops the robot from moving
+      //maybe have delay here??
       front_wall_detect();
       right_wall_detect();
       left_wall_detect();
       delay(500);
       //no wall in the front and no wall on right or left
-      if(l_wall_sensor>=wall_threshold && r_wall_sensor>=wall_threshold && f_wall_sensor<wall_threshold){
-        forward();
+      //can we just have a if front is open go forward??
+      if(f_wall_sensor<wall_threshold){
+        forward();  
       }
+      
+   /*   if(l_wall_sensor>=wall_threshold && r_wall_sensor>=wall_threshold && f_wall_sensor<wall_threshold){
+        forward();
+      }*/
       //no wall on the right and walls on left and front
       if(l_wall_sensor>=wall_threshold && r_wall_sensor<wall_threshold && f_wall_sensor>=wall_threshold){
         right_turn();
@@ -159,6 +165,12 @@ void loop() {
       if(l_wall_sensor<wall_threshold && r_wall_sensor>=wall_threshold && f_wall_sensor>=wall_threshold){
         left_turn();
       }
+      //walls everywhere. Uturn?
+      if(l_wall_sensor>=wall_threshold && r_wall_sensor>=wall_threshold && f_wall_sensor>=wall_threshold){
+        left_turn();
+        left_turn();
+      }
+      
      }
     //not at an intersection: line following and correcting
     else{
