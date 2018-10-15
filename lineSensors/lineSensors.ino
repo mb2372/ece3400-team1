@@ -94,10 +94,6 @@ void front_wall_detect(){
   f_wall_sensor = analogRead(A5);
 }
 
-
-// A5 is h l h
-// A7 is h h h 
-
 //---------------------------------------------------------------------------------------------------------------
 
 //METHODS FOR TURNING/MOVING FORWARD/STOPPING
@@ -105,13 +101,13 @@ void front_wall_detect(){
 void right_turn(){
   servoLeft.write(180);
   servoRight.write(180);
-  delay(670);
+  delay(650); // was 670
 }
 //a turn 90 degrees to the left
 void left_turn(){
   servoLeft.write(0);
   servoRight.write(0);
-  delay(670);
+  delay(650); // was 670
 }
 //correction, not a turn
 void slight_right(){
@@ -225,7 +221,7 @@ void loop() {
       front_wall_detect();
       right_wall_detect();
       left_wall_detect();
-      delay(500);
+      // delay(500);
       //no wall in the front and no wall on right or left
       //can we just have a if front is open go forward??
       if(f_wall_sensor<wall_threshold){
