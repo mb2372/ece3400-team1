@@ -26,7 +26,11 @@ double wall_threshold=150.0;//less is no wall, > is wall
 //initializing select pins for the mux with wall sensors
 int S0 = 7;//pin 7 is S0
 int S1 = 6;//pin 6 is S1
+//  int S2 = 5; //pin 5 is S2
 
+// led pins
+int yellow_led = 2;
+int green_led = 1; 
 
 //IR stuff
 double ir_sensor;
@@ -47,6 +51,9 @@ void setup() {
   pinMode(LED_BUILTIN,OUTPUT);//testing when we are at intersection or correcting. This can be removed later  
   pinMode(S0,OUTPUT);//input select signal 0 for mux
   pinMode(S1,OUTPUT);//input select signal 1 for mux
+  // pinMode(S2,OUTPUT);//input select signal 1 for mux
+  pinMode(green_led,OUTPUT);
+  pinMode(yellow_led,OUTPUT);
   pinMode(A5, INPUT);//output of the mux, input into the Arduino. Need a resistor for this
   //Serial.begin(9600);//for testing the wall output, can delete later
 }
@@ -67,25 +74,29 @@ void setup() {
 
 void left_wall_detect(){
   //setting mux select signals
+  // digitalWrite(S2,LOW);
   digitalWrite(S1, LOW);
   digitalWrite(S0, LOW);
   l_wall_sensor = analogRead(A5);
 }
 void right_wall_detect(){
   //setting mux select signals
+  // digitalWrite(S2,LOW);
   digitalWrite(S1, LOW);
   digitalWrite(S0, HIGH);
   r_wall_sensor = analogRead(A5);
 }
 void front_wall_detect(){
   //setting mux select signals
+  // digitalWrite(S2,LOW);
   digitalWrite(S1,HIGH);
   digitalWrite(S0,LOW);
   f_wall_sensor = analogRead(A5);
 }
 
 
-
+// A5 is h l h
+// A7 is h h h 
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -183,8 +194,10 @@ void loop() {
   ir_read();
   //if IR detected, stop moving (for now)
   if(ir_sensor>=ir_threshold){
+    digitalWrite(yellow_led, HIGH);
     pause(); 
-    delay(1000); 
+    delay(3000);
+    digitalWrite(yellow_led, LOW); 
   }
   //cases for line following and turning
   /*
@@ -224,16 +237,22 @@ void loop() {
       }*/
       //no wall on the right and walls on left and front
       if(l_wall_sensor>=wall_threshold && r_wall_sensor<wall_threshold && f_wall_sensor>=wall_threshold){
+        digitalWrite(green_led, HIGH);
         right_turn();
+        digitalWrite(green_led, LOW);
       }
-      //no wall on the left and walls on right and front
-      if(l_wall_sensor<wall_threshold && r_wall_sensor>=wall_threshold && f_wall_sensor>=wall_threshold){
+      //no wall on the left and wall in front (If can turn left and right, will turn left)
+      if(l_wall_sensor<wall_threshold && f_wall_sensor>=wall_threshold){
+        digitalWrite(green_led, HIGH);
         left_turn();
+        digitalWrite(green_led, LOW);
       }
       //walls everywhere. Uturn?
       if(l_wall_sensor>=wall_threshold && r_wall_sensor>=wall_threshold && f_wall_sensor>=wall_threshold){
+        digitalWrite(green_led, HIGH);
         left_turn();
         left_turn();
+        digitalWrite(green_led, LOW);
       }
       
      }
@@ -265,5 +284,9 @@ void loop() {
       //just here for testing intersection vs not intersection. Can delete later
       digitalWrite(LED_BUILTIN, LOW);
    }
+  // digitalWrite(S2,HIGH);
+  digitalWrite(S1,HIGH);
+  digitalWrite(S0,HIGH);
+
 }
 
