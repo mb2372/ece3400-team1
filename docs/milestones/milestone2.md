@@ -14,7 +14,30 @@ A pinout of the analog pins on the Arduino is shown below:
 
 ![](images/analogPinPinout.JPG){:height="480px" width="640px"}
 
-We added methods to read the values of the front, left, and right wall sensors. The robot only checks for walls at intersections. If a reading on a sensor is above the threshold value, then there is a wall on that side of the robot. Based on the location of walls, the robot behaves in a logical manner to avoid the walls. For instance, if the left and front sensors detect a wall, then the robot should turn right since it is the only non-blocked path.
+We added methods to read the values of the front, left, and right wall sensors. 
+
+```cpp
+void left_wall_detect(){
+  //setting mux select signals
+  digitalWrite(S1, LOW);
+  digitalWrite(S0, LOW);
+  l_wall_sensor = analogRead(A5);
+}
+void right_wall_detect(){
+  //setting mux select signals
+  digitalWrite(S1, LOW);
+  digitalWrite(S0, HIGH);
+  r_wall_sensor = analogRead(A5);
+}
+void front_wall_detect(){
+  //setting mux select signals
+  digitalWrite(S1,HIGH);
+  digitalWrite(S0,LOW);
+  f_wall_sensor = analogRead(A5);
+}
+```
+
+The robot only checks for walls at intersections. If a reading on a sensor is above the threshold value, then there is a wall on that side of the robot. Based on the location of walls, the robot behaves in a logical manner to avoid the walls. For instance, if the left and front sensors detect a wall, then the robot should turn right since it is the only non-blocked path.
 
 ## Avoiding Other Robots
 
