@@ -36,6 +36,13 @@ int green_led = 1;
 double ir_sensor;
 double ir_threshold = 110.0;
 
+
+//microphone stuff. In analog A5
+double mic;
+double mic_threshold = 85.0;
+
+
+
 unsigned int tempADCSRA=0;
 unsigned int tempTIMSK0=0;
 unsigned int tempADMUX=0;
@@ -58,7 +65,7 @@ void setup() {
   //Serial.begin(9600);//for testing the wall output, can delete later
 }
 
-//TODO: METHOD FOR CHECKING MICROPHONE TO KNOW WHEN WE START
+
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -112,24 +119,24 @@ void left_turn(){
 //correction, not a turn
 void slight_right(){
   servoRight.write(95);
-  servoLeft.write(98);
+  servoLeft.write(96);
   delay(100);
 }
 //correction, not a turn
 void hard_right(){
    servoRight.write(95);
-   servoLeft.write(102);
+   servoLeft.write(98);
    delay(100);
 }
 //correction, not a turn
 void slight_left(){
-  servoRight.write(83);
+  servoRight.write(84);
   servoLeft.write(85);
   delay(100);
 }
 //correction, not a turn
 void hard_left(){
-  servoRight.write(79);
+  servoRight.write(82);
   servoLeft.write(85);
   delay(100);
 }
@@ -142,6 +149,21 @@ void forward(){
 void pause(){
   servoRight.write(90);
   servoLeft.write(90);  
+}
+//TODO: METHOD FOR CHECKING MICROPHONE TO KNOW WHEN WE START
+//---------------------------------------------------------------------------------------------------------------
+void mic_read(){
+  
+  for (int i = 0 ; i < 512 ; i += 2) { // save 256 samples
+      fft_input[i] = analogRead(A5); // put real data into even bins
+      fft_input[i+1] = 0; // set odd bins to 0
+  }
+  fft_window(); // window the data for better frequency response
+  fft_reorder(); // reorder the data before doing the fft
+  fft_run(); // process the data in the fft
+  fft_mag_log(); // take the output of the fft
+  mic = fft_log_out[19];//set the sampled value to mic
+  
 }
 
 
@@ -183,6 +205,19 @@ void ir_read(){
 //---------------------------------------------------------------------------------------------------------------
 
 void loop() {
+  //first have to wait for the microphone signal
+  boolean start = false;//we have not started yet
+  Serial.begin(115200);//used for mic. turned off after it done
+  while(start==false){//loop while we have not started
+    mic_read();//update mic val
+    if(mic>mic_threshold){//if threshold is met
+        start=true;//condition to leave while loop
+      }
+  }
+  Serial.end();
+  
+
+  
   lsensorR = analogRead(A3);
   lsensorL = analogRead(A1);
   lsensorM = analogRead(A2);
