@@ -39,7 +39,7 @@ double ir_threshold = 110.0;
 
 //microphone stuff. In analog A5
 double mic;
-double mic_threshold = 85.0;
+double mic_threshold = 55.0;
 
 
 
@@ -153,9 +153,8 @@ void pause(){
 //TODO: METHOD FOR CHECKING MICROPHONE TO KNOW WHEN WE START
 //---------------------------------------------------------------------------------------------------------------
 void mic_read(){
-  
   for (int i = 0 ; i < 512 ; i += 2) { // save 256 samples
-      fft_input[i] = analogRead(A5); // put real data into even bins
+      fft_input[i] = analogRead(A4); // put real data into even bins
       fft_input[i+1] = 0; // set odd bins to 0
   }
   fft_window(); // window the data for better frequency response
@@ -163,10 +162,7 @@ void mic_read(){
   fft_run(); // process the data in the fft
   fft_mag_log(); // take the output of the fft
   mic = fft_log_out[19];//set the sampled value to mic
-  
 }
-
-
 //---------------------------------------------------------------------------------------------------------------
 //METHOD FOR IR
 void ir_read(){
@@ -203,20 +199,16 @@ void ir_read(){
     DIDR0 = tempDIDR0;
 }
 //---------------------------------------------------------------------------------------------------------------
-
+boolean starting = false;//we have not started yet
 void loop() {
   //first have to wait for the microphone signal
-  boolean start = false;//we have not started yet
-  Serial.begin(115200);//used for mic. turned off after it done
-  while(start==false){//loop while we have not started
+  while(starting==false){//loop while we have not started
+    pause();
     mic_read();//update mic val
     if(mic>mic_threshold){//if threshold is met
-        start=true;//condition to leave while loop
+        starting=true;//condition to leave while loop
       }
   }
-  Serial.end();
-  
-
   
   lsensorR = analogRead(A3);
   lsensorL = analogRead(A1);
