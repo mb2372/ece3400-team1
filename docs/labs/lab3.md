@@ -31,7 +31,7 @@ Whenever the robot reaches an intersection, the relevant sensor information will
 
 Modifying the sample code to send over our data instead of the default values, we then set up the radio connected to the robot’s Arduino to transmit data and the radio connected to the laptop to receive the data. The radio receiving the data (the base-station) decoded the message by going through the encoded message bit by bit. Each 1 and 0 sent over was then translated into a string that the provided GUI takes in as a parameter. The string was then output using a simple Serial.println() command so that the GUI would update. The base-station received robot data wirelessly, decoded it, and updated the maze on the GUI.
 
-<iframe width="640" height="480" src="https://www.youtube.com/embed/mwvGefNWUmU" frameborder="0" allowfullscreen></iframe>
+<iframe width="640" height="480" src="https://www.youtube.com/embed/lBzyr6NAHM0" frameborder="0" allowfullscreen></iframe>
 
 
 ## Robot Group
