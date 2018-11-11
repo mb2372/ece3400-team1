@@ -1,0 +1,27 @@
+[15 14 13 12 11 10 9 8] [7 6 5 4 3 2 1 0]
+[7   6  5  4  3  2 1 0]
+
+Bits [1 0] are direction:
+2'b00 is north
+2'b01 is east
+2'b10 is south
+2'b11 is west
+
+Bits [5 4 3 2] are wall presence for [N E S W]
+If bit 5 is 1, then there is a north wall
+If bit 4 is 1, then there is a east wall
+If bit 3 is 1, ,then there is a south wall
+If bit 2 is 1, then there is a west wall
+
+Bit [6] is robot presence
+If bit 6 is 1, then there is a robot present
+
+Bit[8] is color
+If bit 8 is 1, then the treasure is blue
+If bit 8 is 0, then the treasure is red 
+
+Bits [10 and 9] is treasure shape
+2'b00 is no treasure
+2'b01 is triangle
+2'b10 is square
+2'b11 is diamond
