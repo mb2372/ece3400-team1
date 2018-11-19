@@ -32,7 +32,8 @@ if (radio.available()) {
 
    //maze info has direction, walls, robot               
    byte mazeInfo = msg[1];
-   Serial.println("received data");
+   //Serial.println("received data");
+   
    
    //get direction data from robot and update position
    byte dir = mazeInfo;
@@ -43,6 +44,8 @@ if (radio.available()) {
    //get wall data from robot
    byte walls = mazeInfo;
    walls &= 0b00111100;
+
+   
    updateWalls(walls);
 
    //get robot presence
@@ -63,9 +66,9 @@ if (radio.available()) {
     }
                   
    Serial.println("guiMsg: "+String(guiMsg));
-   Serial.println("t info: "+String(treasureInfo));
-   Serial.println("maze info: "+String(mazeInfo));
-   Serial.println();
+   //Serial.println("t info: "+String(treasureInfo));
+   //Serial.println("maze info: "+String(mazeInfo));
+   //Serial.println();
    delay(500);               
    }
 }
@@ -108,24 +111,29 @@ void updatePosition(byte d){
 //update the presence of walls for this tile
 //bits [5:2] of [7:0]
 void updateWalls(byte wall){
+  byte n = (wall & 0b00100000);
+  byte e = (wall & 0b00010000);
+  byte s = (wall & 0b00001000);
+  byte w = (wall & 0b00000100);
+  
   //if north. north is bit 5 of [7:0]
-  if(wall && 0b00100000 == 0b00100000){
-    Serial.println("N wall");
+  if( n== 0b00100000){
+    //Serial.println("N wall");
     guiMsg = guiMsg + ",north=true";
   }
   //if east. east is bit 4 of [7:0]
-  if(wall && 0b00010000 == 0b00010000){
-    Serial.println("E wall");
+  if( e== 0b00010000){
+    //Serial.println("E wall");
     guiMsg = guiMsg + ",east=true";
   }
   //if south. south is bit 3 of [7:0]
-  if(wall && 0b00001000 == 0b00001000){
-    Serial.println("S wall");
+  if( s== 0b00001000){
+    //Serial.println("S wall");
     guiMsg = guiMsg + ",south=true";
   }
   //if west. west i bit 2 of [7:0]
-  if(wall && 0b00000100 == 0b00000100){
-    Serial.println("W wall");
+  if( w== 0b00000100){
+    //Serial.println("W wall");
     guiMsg = guiMsg + ",west=true";
     }
 }

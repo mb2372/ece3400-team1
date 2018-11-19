@@ -25,9 +25,9 @@ int line_threshold=925; //less than is white, greater than is black
 int l_wall_sensor; //left wall sensor
 int r_wall_sensor; //right wall sensor
 int f_wall_sensor; //front wall sensor
-int f_wall_threshold=200;//less is no wall, > is wall
-int l_wall_threshold = 215;
-int r_wall_threshold = 215;
+int f_wall_threshold=130;//less is no wall, > is wall
+int l_wall_threshold = 220;
+int r_wall_threshold = 150;
 
 //average array 
 int avg_reading=0;
@@ -79,6 +79,7 @@ void LEDSetup(){
   analogWrite(green_led,LOW);
   analogWrite(yellow_led,LOW);
 }
+
 void setupRadio(){
   //Radio stuff
   radio.begin();
@@ -192,7 +193,7 @@ bool left_wall_detect(){
   //Serial.println(l_wall_sensor);
   //Serial.println("left wall sensor: "+String(l_wall_sensor));
   if(l_wall_sensor > l_wall_threshold){
-    //Serial.println("Left wall detected");
+   // Serial.println("Left wall detected");
     wallsToRadio(leftWallSensorDir);
     return true;
   } 
@@ -223,7 +224,7 @@ bool front_wall_detect(){
   digitalWrite(S0,LOW);
   f_wall_sensor=average();
   //Serial.println(f_wall_sensor);
-  Serial.println("front wall sensor: "+String(f_wall_sensor));
+  //Serial.println(f_wall_sensor);
   if(f_wall_sensor>f_wall_threshold){
     //Serial.println("front wall detected");
     //wall information to mazeMsg
@@ -331,13 +332,14 @@ bool sendRadio(){
   
   bool ok=radio.write( msg, 2);
   if(ok){
-    Serial.println("ok");
-    Serial.print("mazeMsg: ");
-  Serial.println(mazeMsg,BIN);
-  Serial.println();
+    //Serial.println("ok");
+    //Serial.print("mazeMsg: ");
+  //Serial.println(mazeMsg,BIN);
+  //Serial.println();
     }
     
-  else{Serial.println("failed");}
+  else{//Serial.println("failed");
+    }
   
   return ok;
 }
@@ -345,6 +347,7 @@ bool sendRadio(){
 //INTERSECTION----------------------------------------------------------------------------
 void atIntersection(){
   //if intersection
+  
   if(leftLineSensor() && rightLineSensor() && middleLineSensor()){
     forward();//this pause and delay is for moving forward after intersection
     delay(330);
@@ -357,9 +360,16 @@ void atIntersection(){
     
     rightWallFollow();
     pause();
+    int failCount = 0;
     bool ok = false;
-    while(ok==false){
+    while(ok==false && failCount<5){
       ok=sendRadio();
+      failCount++;
+    }
+    if(failCount>=5){
+      setupRadio();
+      sendRadio();
+      sendRadio();  
     }
     
   }
