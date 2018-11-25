@@ -6,6 +6,23 @@
 #include <SPI.h>
 #include "nRF24L01.h"
 #include "RF24.h"
+#include <StackArray.h>
+//DFS data structures------------------------------------------------------------
+StackArray<int> stack;
+int row = 8;
+int col = 0;
+boolean visited[9][9] = {
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0}, 
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {1,0,0,0,0,0,0,0,0}, 
+};
+
 //-------------------------------------------------------------------------
 //SERVOS
 //<90 is clockwise
@@ -48,10 +65,14 @@ RF24 radio(9, 10);
 const uint64_t pipes[2] = { 0x0000000002LL, 0x0000000003LL };
 
 //00 is north = 0
+int north = 0;
 //01 is east = 1
+int east = 1;
 //10 is south = 2
+int south =2;
 //11 is west = 3
-int dir = 2; 
+int west = 3;
+int dir = north; 
 int rightWallSensorDir = (dir+1)%4;
 int leftWallSensorDir = (dir+3)%4;
 
@@ -108,6 +129,18 @@ void left_turn(){
   if(dir>=4) {dir  = dir - 4;}
   //update the mazeMsg
   mazeMsg |= dir;
+  servoLeft.write(0);
+  servoRight.write(0);
+  delay(610); // was 670
+}
+
+void uturn(){
+  dir = (dir +2)%4;
+  if(dir>=4) {dir  = dir - 4;}
+  mazeMsg |= dir;
+  servoLeft.write(0);
+  servoRight.write(0);
+  delay(610); // was 670
   servoLeft.write(0);
   servoRight.write(0);
   delay(610); // was 670
@@ -311,8 +344,7 @@ void rightWallFollow(){
       //walls everywhere. Uturn?
       else if(left_wall_detect() && right_wall_detect() && front_wall_detect()){
         //digitalWrite(green_led, HIGH);
-        left_turn();
-        left_turn();
+        uturn();
         //Serial.println("case 5\n");
         //digitalWrite(green_led, LOW);
       }
@@ -362,11 +394,11 @@ void atIntersection(){
     pause();
     int failCount = 0;
     bool ok = false;
-    while(ok==false && failCount<5){
+    while(ok==false && failCount<4){
       ok=sendRadio();
       failCount++;
     }
-    if(failCount>=5){
+    if(failCount>=4){
       setupRadio();
       sendRadio();
       sendRadio();  
@@ -398,3 +430,94 @@ void loop() {
     lineFollow();
     
 }
+
+
+// update robot position and squares visited
+void updatePosition() {
+    if (dir == north) {
+      row=row-1;
+      visited[row+1][col] = 1;
+    }
+    else if (dir == south) {
+      row=row+1;
+      visited[row-1][col] = 1;
+    }
+    else if (dir == east) {
+      col=col+1;
+      visited[row][col-1] = 1;
+    }
+    else if (dir == west) {
+      col=col-1;
+      visited[row][col+1] = 1;
+    }
+}
+
+//face the robot in the desired cardinal direciton
+void faceDir(int cardinal){
+  if(dir==cardinal){
+    //do nothing  
+    return;
+  }
+  else if((cardinal-dir+4)%4 == 1){
+    right_turn();
+  }
+  else if(abs(dir-cardinal)==2){
+    uturn();  
+  }
+  else{
+    left_turn();
+  }
+}
+
+//trying out dfs
+void dfs(){
+  //detect walls
+  front_wall_detect();
+  right_wall_detect();
+  left_wall_detect();
+  //given walls, choose a direction to go NESW priority
+  
+  //if not top row and no wall to the north and north is unvisited, then visit
+  if(row>0 && (mazeMsg & 0b00100000 == 0) && visited[row-1][col]==0){
+      faceDir(north);
+      stack.push(dir);
+   }
+
+  //if not rightmost col and no wall to the east and east is unvisited, then visit
+  else if(col<8 && (mazeMsg & 0b00010000 == 0) && visited[row][col+1]==0){
+    faceDir(east);
+    stack.push(dir);  
+  }
+
+  //if not bottom row and no wall to othe south and south is unvisited, then visit
+  else if(row<8 && (mazeMsg & 0b00001000 == 0) && visited[row+1][col]==0){
+    faceDir(south);
+    stack.push(dir);
+  }
+
+  else if(col>0 && (mazeMsg & 0b00000100 ==0) && visited[row][col-1]==0){
+    faceDir(west);
+    stack.push(dir);  
+  }
+  //all else fails go the opposite direction of most recent dir
+  else{
+    int newDir = (stack.pop() + 2) % 4;
+    faceDir(newDir);
+  }
+  
+  //update position and visited tiles
+  updatePosition();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
