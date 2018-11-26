@@ -9,7 +9,7 @@
 #include <StackArray.h>
 //DFS data structures------------------------------------------------------------
 StackArray<int> stack;
-int row = 8;
+int row = 0;
 int col = 0;
 boolean visited[9][9] = {
   {1,0,0,0,0,0,0,0,0},
@@ -42,9 +42,9 @@ int line_threshold=925; //less than is white, greater than is black
 int l_wall_sensor; //left wall sensor
 int r_wall_sensor; //right wall sensor
 int f_wall_sensor; //front wall sensor
-int f_wall_threshold=130;//less is no wall, > is wall
-int l_wall_threshold = 220;
-int r_wall_threshold = 150;
+int f_wall_threshold=160;//less is no wall, > is wall
+int l_wall_threshold = 200;
+int r_wall_threshold = 180;
 
 //average array 
 int avg_reading=0;
@@ -72,6 +72,7 @@ int east = 1;
 int south =2;
 //11 is west = 3
 int west = 3;
+
 int dir = south; 
 int rightWallSensorDir = (dir+1)%4;
 int leftWallSensorDir = (dir+3)%4;
@@ -80,6 +81,10 @@ int leftWallSensorDir = (dir+3)%4;
 byte mazeMsg=dir;
 //sends over information about treasure
 byte treasureMsg=0;
+
+//microphone stuff. In analog A4---------------------------------------------------------------------------------
+int mic;
+int mic_threshold = 50;
 
 //SETUP METHODS-----------------------------------------------------------------------------------------------
 void servoSetup(){
@@ -312,6 +317,22 @@ void lineFollow(){
        
 }
 
+
+//METHOD FOR CHECKING MICROPHONE TO KNOW WHEN WE START
+//---------------------------------------------------------------------------------------------------------------
+void mic_read(){
+  for (int i = 0 ; i < 512 ; i += 2) { // save 256 samples
+      fft_input[i] = analogRead(A4); // put real data into even bins
+      fft_input[i+1] = 0; // set odd bins to 0
+  }
+  fft_window(); // window the data for better frequency response
+  fft_reorder(); // reorder the data before doing the fft
+  fft_run(); // process the data in the fft
+  fft_mag_log(); // take the output of the fft
+  mic = fft_log_out[19];//set the sampled value to mic
+}
+
+
 //RIGHT WALL FOLLOW-----------------------------------------------------------------------------------------
 void rightWallFollow(){
       //no wall in front, go forward
@@ -413,6 +434,7 @@ void resetMazeMsg(){
   mazeMsg = 0;
 }
 
+boolean starting = true;//we have not started yet
 //SETUP--------------------------------------------------------------------------------------------------------
 void setup() {
   servoSetup();
@@ -421,7 +443,15 @@ void setup() {
   setupRadio();
   //LEDSetup();
   resetMazeMsg();
- 
+  
+  //first have to wait for the microphone signal
+  while(starting==false){//loop while we have not started
+    pause();
+    mic_read();//update mic val
+    if(mic>mic_threshold){//if threshold is met
+        starting=true;//condition to leave while loop
+      }
+  }
 }
 
 //LOOP-------------------------------------------------------------------------------------------------------
@@ -432,7 +462,21 @@ void loop() {
 }
 
 
-// update robot position and squares visited
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// update robot position and squares visited-----------------------------------------------------------------
 void updatePosition() {
     if (dir == north) {
       row=row-1;
@@ -452,7 +496,7 @@ void updatePosition() {
     }
 }
 
-//face the robot in the desired cardinal direciton
+//face the robot in the desired cardinal direciton-------------------------------------------------------------
 void faceDir(int cardinal){
   if(dir==cardinal){
     //do nothing  
@@ -469,7 +513,7 @@ void faceDir(int cardinal){
   }
 }
 
-//trying out dfs
+//trying out dfs-------------------------------------------------------------------------------------------
 void dfs(){
   //detect walls
   front_wall_detect();
@@ -482,8 +526,6 @@ void dfs(){
     faceDir(south);
     stack.push(dir);
   }
-  
-
   //if not rightmost col and no wall to the east and east is unvisited, then visit
   else if(col<8 && (mazeMsg & 0b00010000 == 0) && visited[row][col+1]==0){
     faceDir(east);
@@ -505,7 +547,6 @@ void dfs(){
     int newDir = (stack.pop() + 2) % 4;
     faceDir(newDir);
   }
-  
   //update position and visited tiles
   updatePosition();
 }

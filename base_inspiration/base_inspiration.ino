@@ -39,7 +39,7 @@ if (radio.available()) {
    byte dir = mazeInfo;
    dir &= 0b00000011;
    //Serial.println(dir);
-   updatePosition(dir);
+   
 
    //get wall data from robot
    byte walls = mazeInfo;
@@ -64,8 +64,10 @@ if (radio.available()) {
    if(tshape!=0){//if there is a shape
       updateTColor(tcolor);
     }
-                  
-   Serial.println("guiMsg: "+String(guiMsg));
+   //update the guiMsg
+   guiMsg = String(row)+","+String(col) + guiMsg;            
+   Serial.println(guiMsg);
+   updatePosition(dir);
    //Serial.println("t info: "+String(treasureInfo));
    //Serial.println("maze info: "+String(mazeInfo));
    //Serial.println();
@@ -88,24 +90,23 @@ void updatePosition(byte d){
    switch(d){
    case 0://heading north, row decrements by 1
      row = row-1;
-     Serial.println("heading north");
+     //Serial.println("heading north");
      break;
    case 1://heading east, col increments by 1
      col = col+1;
-     Serial.println("heading east");
+     //Serial.println("heading east");
      break;
    case 2://heading south, row increments by 1
      row = row+1;
-     Serial.println("heading south");
+     //Serial.println("heading south");
      break;
    case 3://heading west, ,col dec by 1
      col = col -1;
-     Serial.println("heading west");
+     //Serial.println("heading west");
      break;
    }
    
-   //update the guiMsg
-   guiMsg = guiMsg + String(row)+","+String(col);
+   
 }
 
 //update the presence of walls for this tile
