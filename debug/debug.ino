@@ -12,7 +12,7 @@ StackArray<int> stack;
 int row = 8;
 int col = 0;
 boolean visited[9][9] = {
-  {0,0,0,0,0,0,0,0,0},
+  {1,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0},
@@ -20,7 +20,7 @@ boolean visited[9][9] = {
   {0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0},
-  {1,0,0,0,0,0,0,0,0}, 
+  {0,0,0,0,0,0,0,0,0}, 
 };
 
 //-------------------------------------------------------------------------
@@ -72,7 +72,7 @@ int east = 1;
 int south =2;
 //11 is west = 3
 int west = 3;
-int dir = north; 
+int dir = south; 
 int rightWallSensorDir = (dir+1)%4;
 int leftWallSensorDir = (dir+3)%4;
 
@@ -475,13 +475,14 @@ void dfs(){
   front_wall_detect();
   right_wall_detect();
   left_wall_detect();
-  //given walls, choose a direction to go NESW priority
+  //given walls, choose a direction to go SENW priority
+
+  //if not bottom row and no wall to othe south and south is unvisited, then visit
+  if(row<8 && (mazeMsg & 0b00001000 == 0) && visited[row+1][col]==0){
+    faceDir(south);
+    stack.push(dir);
+  }
   
-  //if not top row and no wall to the north and north is unvisited, then visit
-  if(row>0 && (mazeMsg & 0b00100000 == 0) && visited[row-1][col]==0){
-      faceDir(north);
-      stack.push(dir);
-   }
 
   //if not rightmost col and no wall to the east and east is unvisited, then visit
   else if(col<8 && (mazeMsg & 0b00010000 == 0) && visited[row][col+1]==0){
@@ -489,11 +490,11 @@ void dfs(){
     stack.push(dir);  
   }
 
-  //if not bottom row and no wall to othe south and south is unvisited, then visit
-  else if(row<8 && (mazeMsg & 0b00001000 == 0) && visited[row+1][col]==0){
-    faceDir(south);
-    stack.push(dir);
-  }
+  //if not top row and no wall to the north and north is unvisited, then visit
+  else if(row>0 && (mazeMsg & 0b00100000 == 0) && visited[row-1][col]==0){
+      faceDir(north);
+      stack.push(dir);
+   }
 
   else if(col>0 && (mazeMsg & 0b00000100 ==0) && visited[row][col-1]==0){
     faceDir(west);
