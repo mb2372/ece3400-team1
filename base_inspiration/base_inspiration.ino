@@ -44,7 +44,7 @@ if (radio.available()) {
    //get wall data from robot
    byte walls = mazeInfo;
    walls &= 0b00111100;
-
+   
    
    updateWalls(walls);
 
@@ -116,7 +116,7 @@ void updateWalls(byte wall){
   byte e = (wall & 0b00010000);
   byte s = (wall & 0b00001000);
   byte w = (wall & 0b00000100);
-  
+  //Serial.println(wall,BIN);
   //if north. north is bit 5 of [7:0]
   if( n== 0b00100000){
     //Serial.println("N wall");
