@@ -11,25 +11,43 @@
 StackArray<int> stack;
 int row = 0;
 int col = 0;
-int numRows = 2;
-int numCols = 3;
-/*boolean visited[9][9] = {
-  {1,0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0,0}, 
-  {0,0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0,0}, 
-};*/
+int numRows = 5;
+int numCols = 4;
 
-boolean visited[2][3] = {
-  {1,0,0},
-  {0,0,0},
+/*
+boolean visited[9][9] = {
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0}, 
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0}, 
 };
 
+*/
+
+boolean visited[5][4] = {
+  {0,0,0,0},
+  {0,0,0,0},
+  {0,0,0,0},
+  {0,0,0,0},
+  {0,0,0,0},
+};
+
+struct node{
+  bool nWall;
+  bool eWall;
+  bool sWall;
+  bool wWall;
+  bool visited;
+  
+};
+node Node;
+
+node grid[5][4];
 //-------------------------------------------------------------------------
 //SERVOS
 //<90 is clockwise
@@ -44,14 +62,16 @@ int lsensorL; //left line sensor
 int lsensorM; //middle line sensor
 int line_threshold=925; //less than is white, greater than is black
 
+
+
 //WALLS-------------------------------------------------------------------------------------
 //declaring wall sensors & wall/no wall threshold
 int l_wall_sensor; //left wall sensor
 int r_wall_sensor; //right wall sensor
 int f_wall_sensor; //front wall sensor
-int f_wall_threshold=170;//less is no wall, > is wall
-int l_wall_threshold = 130;
-int r_wall_threshold = 155;
+int f_wall_threshold=172;//less is no wall, > is wall
+int l_wall_threshold = 125;
+int r_wall_threshold = 157;
 
 //average array 
 int avg_reading=0;
@@ -247,7 +267,7 @@ bool left_wall_detect(){
   l_wall_sensor = 0;
   digitalWrite(S1, LOW);
   digitalWrite(S0, LOW);
-  delay(60);
+  delay(80);
   l_wall_sensor = average();
   //Serial.println(l_wall_sensor);
   //Serial.println("left wall sensor: "+String(l_wall_sensor));
@@ -268,7 +288,7 @@ bool right_wall_detect(){
   r_wall_sensor = 0;
   digitalWrite(S1, LOW);
   digitalWrite(S0, HIGH);
-  delay(60);
+  delay(80);
   r_wall_sensor = average();
   //Serial.println("right wall sensor: "+String(r_wall_sensor));
   //Serial.println(r_wall_sensor);
@@ -286,7 +306,7 @@ bool front_wall_detect(){
   digitalWrite(S1,HIGH);
   digitalWrite(S0,LOW);
 
-  delay(60);
+  delay(80);
   f_wall_sensor=average();
   
   //Serial.println("front wall sensor: "+String(f_wall_sensor));
@@ -365,44 +385,112 @@ void mic_read(){
 }
 
 
-//RIGHT WALL FOLLOW-----------------------------------------------------------------------------------------
-void rightWallFollow(){
-      //no wall in front, go forward
-      bool f = front_wall_detect();
-      delay(10);
-      bool r = right_wall_detect();
-      delay(10);
-      bool l = left_wall_detect();
-      delay(10);
-      if(!f){
-            forward();  
-          }
-          //if you can turn right, then do it
-      else if(!r){
-        right_turn();
-        }
-      //wall on front and right, turn left
-      else if(!l && f && r){
-        //digitalWrite(green_led, HIGH);
-        left_turn();
-        //digitalWrite(green_led, LOW);
-      }
-   //walls on left and front
-      else if(l && !r && f){
-        //digitalWrite(green_led, HIGH);
-        right_turn();
-        //digitalWrite(green_led, LOW);
-      }
-      //walls everywhere. Uturn?
-      else if(l && r && f){
-        //digitalWrite(green_led, HIGH);
-        uturn();
-        //digitalWrite(green_led, LOW);
-      }
-      
+
+
+
+
+
+
+
+// update robot position and squares visited-----------------------------------------------------------------
+void updatePosition() {
+    if (dir == north) {
+      row=row-1;
+      visited[row+1][col] = 1;
+    }
+    else if (dir == south) {
+      row=row+1;
+      visited[row-1][col] = 1;
+    }
+    else if (dir == east) {
+      col=col+1;
+      visited[row][col-1] = 1;
+    }
+    else if (dir == west) {
+      col=col-1;
+      visited[row][col+1] = 1;
+    }
 }
 
+//face the robot in the desired cardinal direciton-------------------------------------------------------------
+void faceDir(int cardinal){
+  if(dir==cardinal){
+    //do nothing  
+    //return;
+    forward();
+  }
+  else if((cardinal-dir+4)%4 == 1){
+    right_turn();
+  }
+  else if(abs(dir-cardinal)==2){
+    uturn();  
+  }
+  else{
+    left_turn();
+  }
+}
 
+//trying out dfs-------------------------------------------------------------------------------------------
+void dfs(){
+  //detect walls
+  bool f = front_wall_detect();
+  delay(10);
+  bool r = right_wall_detect();
+  delay(10);
+  bool l = left_wall_detect();
+  delay(10);
+  //given walls, choose a direction to go SENW priority
+  Serial.println("IN DFS");
+  //if not bottom row and no wall to othe south and south is unvisited, then visit
+  Serial.println(mazeMsg,BIN);
+  byte n = (mazeMsg & 0b00100000);
+  byte e = (mazeMsg & 0b00010000);
+  byte s = (mazeMsg & 0b00001000);
+  byte w = (mazeMsg & 0b00000100);
+  if(row<numRows-1 && (s == 0) && visited[row+1][col]==0){
+    faceDir(south);
+    stack.push(dir);
+    Serial.println("1");
+  }
+  
+  //if not rightmost col and no wall to the east and east is unvisited, then visit
+  else if(col<numCols-1 && (e == 0) && visited[row][col+1]==0){
+    faceDir(east);
+    stack.push(dir);  
+    
+Serial.println("2");
+  }
+  //if not top row and no wall to the north and north is unvisited, then visit
+  else if(row>0 && (n == 0) && visited[row-1][col]==0){
+      faceDir(north);
+      stack.push(dir);
+      
+Serial.println("3");
+   }
+
+  else if(col>0 && (w ==0) && visited[row][col-1]==0){
+    faceDir(west);
+    stack.push(dir);  
+    
+Serial.println("4");
+  }
+  //all else fails go the opposite direction of most recent dir
+  else{
+    if(!stack.isEmpty()){
+       int newDir = (stack.pop() + 2) % 4;
+       faceDir(newDir);
+       Serial.println("stack pop");
+    }
+    else{
+      forward();  
+      Serial.println("forward");
+    }
+   
+    
+  }
+  //update position and visited tiles
+  updatePosition();
+}
 
 
 
@@ -456,8 +544,8 @@ void atIntersection(){
     pause();//this pause and delay is for reading wall time
     delay(200);
     
-    //dfs();
-    rightWallFollow();
+    dfs();
+    //rightWallFollow();
     pause();
     int failCount = 0;
     bool ok = false;
@@ -522,90 +610,47 @@ void loop() {
 
 
 
-// update robot position and squares visited-----------------------------------------------------------------
-void updatePosition() {
-    if (dir == north) {
-      row=row-1;
-      visited[row+1][col] = 1;
-    }
-    else if (dir == south) {
-      row=row+1;
-      visited[row-1][col] = 1;
-    }
-    else if (dir == east) {
-      col=col+1;
-      visited[row][col-1] = 1;
-    }
-    else if (dir == west) {
-      col=col-1;
-      visited[row][col+1] = 1;
-    }
+
+
+
+
+
+//RIGHT WALL FOLLOW-----------------------------------------------------------------------------------------
+void rightWallFollow(){
+      //no wall in front, go forward
+      bool f = front_wall_detect();
+      //delay(10);
+      bool r = right_wall_detect();
+      //delay(10);
+      bool l = left_wall_detect();
+      //delay(10);
+      if(!f){
+            forward();  
+          }
+          //if you can turn right, then do it
+      else if(!r){
+        right_turn();
+        }
+      //wall on front and right, turn left
+      else if(!l && f && r){
+        //digitalWrite(green_led, HIGH);
+        left_turn();
+        //digitalWrite(green_led, LOW);
+      }
+   //walls on left and front
+      else if(l && !r && f){
+        //digitalWrite(green_led, HIGH);
+        right_turn();
+        //digitalWrite(green_led, LOW);
+      }
+      //walls everywhere. Uturn?
+      else if(l && r && f){
+        //digitalWrite(green_led, HIGH);
+        uturn();
+        //digitalWrite(green_led, LOW);
+      }
+      
 }
-
-//face the robot in the desired cardinal direciton-------------------------------------------------------------
-void faceDir(int cardinal){
-  if(dir==cardinal){
-    //do nothing  
-    return;
-  }
-  else if((cardinal-dir+4)%4 == 1){
-    right_turn();
-  }
-  else if(abs(dir-cardinal)==2){
-    uturn();  
-  }
-  else{
-    left_turn();
-  }
-}
-
-//trying out dfs-------------------------------------------------------------------------------------------
-void dfs(){
-  //detect walls
-  bool f = front_wall_detect();
-  delay(10);
-  bool r = right_wall_detect();
-  delay(10);
-  bool l = left_wall_detect();
-  delay(10);
-  //given walls, choose a direction to go SENW priority
-
-  //if not bottom row and no wall to othe south and south is unvisited, then visit
-  if(row<numRows-1 && (mazeMsg & 0b00001000 == 0) && visited[row+1][col]==0){
-    faceDir(south);
-    stack.push(dir);
-  }
-  //if not rightmost col and no wall to the east and east is unvisited, then visit
-  else if(col<numCols-1 && (mazeMsg & 0b00010000 == 0) && visited[row][col+1]==0){
-    faceDir(east);
-    stack.push(dir);  
-  }
-
-  //if not top row and no wall to the north and north is unvisited, then visit
-  else if(row>0 && (mazeMsg & 0b00100000 == 0) && visited[row-1][col]==0){
-      faceDir(north);
-      stack.push(dir);
-   }
-
-  else if(col>0 && (mazeMsg & 0b00000100 ==0) && visited[row][col-1]==0){
-    faceDir(west);
-    stack.push(dir);  
-  }
-  //all else fails go the opposite direction of most recent dir
-  else{
-    int newDir = (stack.pop() + 2) % 4;
-    faceDir(newDir);
-  }
-  //update position and visited tiles
-  updatePosition();
-}
-
-
-
-
-
-
-
 
 
 
