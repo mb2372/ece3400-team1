@@ -36,7 +36,7 @@ boolean visited[5][4] = {
   {0,0,0,0},
   {0,0,0,0},
 };
-
+/*
 struct node{
   bool nWall;
   bool eWall;
@@ -47,7 +47,7 @@ struct node{
 };
 node Node;
 
-node grid[5][4];
+node grid[5][4];*/
 //-------------------------------------------------------------------------
 //SERVOS
 //<90 is clockwise
@@ -258,6 +258,7 @@ bool middleLineSensor(){
 //      H      L          FRONT  
 //////////////////////////////////////////
 
+
 bool left_wall_detect(){
   //setting mux select signals
   // digitalWrite(S2,LOW);
@@ -386,12 +387,6 @@ void mic_read(){
 
 
 
-
-
-
-
-
-
 // update robot position and squares visited-----------------------------------------------------------------
 void updatePosition() {
     if (dir == north) {
@@ -413,7 +408,7 @@ void updatePosition() {
 }
 
 //face the robot in the desired cardinal direciton-------------------------------------------------------------
-void faceDir(int cardinal){
+void turnToDir(int cardinal){
   if(dir==cardinal){
     //do nothing  
     //return;
@@ -440,66 +435,45 @@ void dfs(){
   bool l = left_wall_detect();
   delay(10);
   //given walls, choose a direction to go SENW priority
-  Serial.println("IN DFS");
   //if not bottom row and no wall to othe south and south is unvisited, then visit
-  Serial.println(mazeMsg,BIN);
+ // Serial.println(mazeMsg,BIN);
   byte n = (mazeMsg & 0b00100000);
   byte e = (mazeMsg & 0b00010000);
   byte s = (mazeMsg & 0b00001000);
   byte w = (mazeMsg & 0b00000100);
   if(row<numRows-1 && (s == 0) && visited[row+1][col]==0){
-    faceDir(south);
+    turnToDir(south);
     stack.push(dir);
-    Serial.println("1");
   }
   
   //if not rightmost col and no wall to the east and east is unvisited, then visit
   else if(col<numCols-1 && (e == 0) && visited[row][col+1]==0){
-    faceDir(east);
+    turnToDir(east);
     stack.push(dir);  
-    
-Serial.println("2");
   }
   //if not top row and no wall to the north and north is unvisited, then visit
   else if(row>0 && (n == 0) && visited[row-1][col]==0){
-      faceDir(north);
+      turnToDir(north);
       stack.push(dir);
-      
-Serial.println("3");
    }
 
   else if(col>0 && (w ==0) && visited[row][col-1]==0){
-    faceDir(west);
+    turnToDir(west);
     stack.push(dir);  
-    
-Serial.println("4");
   }
   //all else fails go the opposite direction of most recent dir
   else{
     if(!stack.isEmpty()){
        int newDir = (stack.pop() + 2) % 4;
-       faceDir(newDir);
-       Serial.println("stack pop");
+       turnToDir(newDir);
     }
     else{
       forward();  
-      Serial.println("forward");
     }
-   
-    
   }
   //update position and visited tiles
   updatePosition();
 }
-
-
-
-
-
-
-
-
-
 
 
 
