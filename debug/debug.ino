@@ -69,9 +69,9 @@ int line_threshold=925; //less than is white, greater than is black
 int l_wall_sensor; //left wall sensor
 int r_wall_sensor; //right wall sensor
 int f_wall_sensor; //front wall sensor
-int f_wall_threshold=172;//less is no wall, > is wall
-int l_wall_threshold = 125;
-int r_wall_threshold = 157;
+int f_wall_threshold=178;//less is no wall, > is wall
+int l_wall_threshold = 138;
+int r_wall_threshold = 150;
 
 //average array 
 int avg_reading=0;
@@ -367,6 +367,7 @@ void lineFollow(){
   if(!leftLineSensor() && rightLineSensor()&& !middleLineSensor()) hard_right();
   //go forward
   if(!leftLineSensor() && !rightLineSensor()&& middleLineSensor()) forward();
+  if(!leftLineSensor() && !rightLineSensor()&& !middleLineSensor()) forward();
        
 }
 
@@ -504,6 +505,57 @@ bool sendRadio(){
   return ok;
 }
 
+
+
+
+
+
+
+
+//RIGHT WALL FOLLOW-----------------------------------------------------------------------------------------
+void rightWallFollow(){
+      //no wall in front, go forward
+      bool f = front_wall_detect();
+      //delay(10);
+      bool r = right_wall_detect();
+      //delay(10);
+      bool l = left_wall_detect();
+      //delay(10);
+      if(!f){
+            forward();  
+          }
+          //if you can turn right, then do it
+      else if(!r){
+        right_turn();
+        }
+      //wall on front and right, turn left
+      else if(!l && f && r){
+        //digitalWrite(green_led, HIGH);
+        left_turn();
+        //digitalWrite(green_led, LOW);
+      }
+   //walls on left and front
+      else if(l && !r && f){
+        //digitalWrite(green_led, HIGH);
+        right_turn();
+        //digitalWrite(green_led, LOW);
+      }
+      //walls everywhere. Uturn?
+      else if(l && r && f){
+        //digitalWrite(green_led, HIGH);
+        uturn();
+        //digitalWrite(green_led, LOW);
+      }
+      
+}
+
+
+
+
+
+
+
+
 //INTERSECTION----------------------------------------------------------------------------
 void atIntersection(){
   //if intersection
@@ -515,8 +567,8 @@ void atIntersection(){
     
     //Serial.println(mazeMsg);
     resetMazeMsg();
-    pause();//this pause and delay is for reading wall time
-    delay(200);
+    //pause();//this pause and delay is for reading wall time
+    //delay(20);
     
     dfs();
     //rightWallFollow();
@@ -589,42 +641,6 @@ void loop() {
 
 
 
-//RIGHT WALL FOLLOW-----------------------------------------------------------------------------------------
-void rightWallFollow(){
-      //no wall in front, go forward
-      bool f = front_wall_detect();
-      //delay(10);
-      bool r = right_wall_detect();
-      //delay(10);
-      bool l = left_wall_detect();
-      //delay(10);
-      if(!f){
-            forward();  
-          }
-          //if you can turn right, then do it
-      else if(!r){
-        right_turn();
-        }
-      //wall on front and right, turn left
-      else if(!l && f && r){
-        //digitalWrite(green_led, HIGH);
-        left_turn();
-        //digitalWrite(green_led, LOW);
-      }
-   //walls on left and front
-      else if(l && !r && f){
-        //digitalWrite(green_led, HIGH);
-        right_turn();
-        //digitalWrite(green_led, LOW);
-      }
-      //walls everywhere. Uturn?
-      else if(l && r && f){
-        //digitalWrite(green_led, HIGH);
-        uturn();
-        //digitalWrite(green_led, LOW);
-      }
-      
-}
 
 
 
