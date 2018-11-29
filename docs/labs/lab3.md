@@ -67,7 +67,11 @@ void loop() {
   }
 ```
 
-This is accomplished with a boolean value that indicates what stage the robot is in. Before the 660 Hz signal, ‘starting’ is false. With in loop() there is a while loop that will stop upon ‘starting’ becoming true. This only happens when ‘mic’ goes over the designated threshold. The below video demonstrates the robot starting at 660Hz, stopping upon seeing a IR hat, and ignoring a decoy. The last two accomplishments are a result of milestone 2. 
+This is accomplished with a boolean value that indicates what stage the robot is in. Before the 660 Hz signal, ‘starting’ is false. With in loop() there is a while loop that will stop upon ‘starting’ becoming true. This only happens when ‘mic’ goes over the designated threshold. The below video demonstrates the robot starting at 660Hz and traversing the maze.
 
 
 <iframe width="640" height="480" src="https://www.youtube.com/embed/AFjFPb3GQew" frameborder="0" allowfullscreen></iframe>
+
+The following video shows the robot stopping upon seeing a IR hat, and ignoring a decoy. The last two accomplishments are a result of milestone 2. 
+
+<iframe width="640" height="480" src="https://youtube.com/embed/P4jBO3u_GV8" frameborder="0" allowfullscreen></iframe>
