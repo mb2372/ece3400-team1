@@ -75,3 +75,7 @@ This is accomplished with a boolean value that indicates what stage the robot is
 The following video shows the robot stopping upon seeing a IR hat, and ignoring a decoy. The last two accomplishments are a result of milestone 2. 
 
 <iframe width="640" height="480" src="https://youtube.com/embed/P4jBO3u_GV8" frameborder="0" allowfullscreen></iframe>
+
+Finally, the following video shows the GUI being live updated through radio transmissions from the robot to the base station.
+<iframe width="640" height="480" src="https://www.youtube.com/embed/kUjGW06mavE" frameborder="0" allowfullscreen></iframe>
+
