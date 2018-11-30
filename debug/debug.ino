@@ -11,10 +11,10 @@
 StackArray<int> stack;
 int row = 0;
 int col = 0;
-int numRows = 5;
-int numCols = 4;
+int numRows = 9;
+int numCols = 9;
 
-/*
+
 boolean visited[9][9] = {
   {0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0},
@@ -27,8 +27,8 @@ boolean visited[9][9] = {
   {0,0,0,0,0,0,0,0,0}, 
 };
 
-*/
 
+/*
 boolean visited[5][4] = {
   {0,0,0,0},
   {0,0,0,0},
@@ -36,6 +36,7 @@ boolean visited[5][4] = {
   {0,0,0,0},
   {0,0,0,0},
 };
+*/
 /*
 struct node{
   bool nWall;
@@ -306,7 +307,6 @@ bool front_wall_detect(){
   f_wall_sensor = 0;
   digitalWrite(S1,HIGH);
   digitalWrite(S0,LOW);
-
   delay(80);
   f_wall_sensor=average();
   
@@ -430,11 +430,18 @@ void turnToDir(int cardinal){
 void dfs(){
   //detect walls
   bool f = front_wall_detect();
-  delay(10);
+  //Serial.println("Front Wall: " + String(f)); 
+  //Serial.println("Front Wall Sensor: "+String(f_wall_sensor));
+  //delay(10);
   bool r = right_wall_detect();
-  delay(10);
+  //Serial.println("Right Wall: " + String(r));
+  //Serial.println("Right Wall Sensor: "+String(r_wall_sensor));
+  //delay(10);
   bool l = left_wall_detect();
-  delay(10);
+ // Serial.println("Left Wall: " + String(l));
+  //Serial.println("Left Wall Sensor: "+String(l_wall_sensor));
+  //Serial.println("");
+  //delay(10);
   //given walls, choose a direction to go SENW priority
   //if not bottom row and no wall to othe south and south is unvisited, then visit
  // Serial.println(mazeMsg,BIN);
@@ -442,6 +449,7 @@ void dfs(){
   byte e = (mazeMsg & 0b00010000);
   byte s = (mazeMsg & 0b00001000);
   byte w = (mazeMsg & 0b00000100);
+ 
   if(row<numRows-1 && (s == 0) && visited[row+1][col]==0){
     turnToDir(south);
     stack.push(dir);
@@ -472,6 +480,7 @@ void dfs(){
       forward();  
     }
   }
+
   //update position and visited tiles
   updatePosition();
 }
