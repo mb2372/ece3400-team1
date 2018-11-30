@@ -61,7 +61,7 @@ Servo servoRight; //right servo
 int lsensorR; //right line sensor
 int lsensorL; //left line sensor
 int lsensorM; //middle line sensor
-int line_threshold=925; //less than is white, greater than is black
+int line_threshold=945; //less than is white, greater than is black
 
 
 
@@ -229,6 +229,8 @@ void pause(){
 //returns true if white, false if not white
 bool leftLineSensor(){
   lsensorL = analogRead(A1);
+  Serial.println("Left");
+  Serial.println(lsensorL);
   if(lsensorL<line_threshold){
     return true;
     }
@@ -236,6 +238,8 @@ bool leftLineSensor(){
 }
 bool rightLineSensor(){
   lsensorR = analogRead(A3);
+  Serial.println("Right");
+  Serial.println(lsensorR);
   if(lsensorR<line_threshold){
     return true;
     }
@@ -243,6 +247,9 @@ bool rightLineSensor(){
 }
 bool middleLineSensor(){
   lsensorM = analogRead(A2);
+  Serial.println("Middle");
+  Serial.println(lsensorM);
+  Serial.println("\n\n");
   if(lsensorM<line_threshold){
     return true;
     }
