@@ -1,4 +1,8 @@
 # Milestone 4
+
+## Objective
+The goal of this milestone is to have the robot detect the presence of a treasure. If a treasure is present, then the robot should recognize both the shape and color of the treasure.
+
 ## Detecting Color/Presence of a Treasure:
 
 The first component of our treasure detection is to determine if a treasure is present and what color it is. This is done by examining the color of each pixel in an image. At the positive edge of the 25 MHz clock, we check the value of VGA_VSYNC_NEG. If VGA_VSYNC_NEG is LOW, then we reset our counters to prepare for the next image. If it is high, we check the color of the current pixel. The pixels are in RGB332 format. First, we check if PIXEL_IN[7:6](RedMSBs) are greater than PIXEL_IN[4:3](GreenMSBs) and PIXEL_IN[1:0](BlueMSBs). If so, a pixel is red. If not, we check if PIXEL_IN[1:0] < 2’b11, PIXEL_IN[7:6] < 2’b01, and PIXEL_IN[4:3] < 2’b01. This lets us better detect darker blues, which is often what we see when looking at a blue treasure.  If a pixel is determined to be red or blue, we increment the appropriate counter (red_count or blue_count). We then check these counters against a threshold to determine if a treasure is present. If there are more than 5000 red pixels on screen, we determine a red treasure to be present. If there are more than 7000 blue/dark pixels on screen, we determine a blue treasure to be present. Our condition on detecting blue pixels can lead us to seeing any dark image as a blue treasure, but in a maze of white walls we believe this will not be a major issue. If neither red_count or blue_count meets the threshold, we determine there to be no treasure present and set our RESULT value.

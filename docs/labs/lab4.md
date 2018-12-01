@@ -1,4 +1,6 @@
 # Lab 4: Camera
+## Objective
+The goal of this lab is to use an FPGA and a camera to detect shapes and colors. This information is then relayed to the Arduino and ultimately the GUI of the maze.
 
 ## Arduino-Camera Communication
 The first step was to wire the OV7670 camera to the Arduino board using the I2C interface, which uses the SCL and SDA pins. The following diagram shows the wiring:

@@ -1,5 +1,8 @@
 # Lab 3
 
+## Objective
+The goal of this lab is to efficiently encode and send information about the maze from the Arduino on the robot to a base station Arduino connected to a laptop over radio. The encoded maze information is then decoded by the base station, and a maze visualization is displayed on the laptop screen using a provided GUI. The robot also has a microphone integrated into it so that the robot will automatically start upon a 660Hz signal. Finally, the robot can detect IR signals to avoid other robots while avoiding decoy IR signals.
+
 ## Radio Group
 
 We first used a breakout board and soldered the radio pins accordingly. The RF24 library was used and the sample code provided in the library was used to ensure that the radios functioned properly. Data about the maze needs to be sent from the radio on the robot to the radio attached to the Arduino connected to a group member’s laptop. To concisely send this information, bitmasking was used to convey information about walls, other robots, explored tiles, treasures, and which direction the robot is moving in. The encoding is shown below.
