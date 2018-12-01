@@ -65,8 +65,7 @@ We then set the FPGA output pins and tested the parallel communication using the
 
 <iframe width="640" height="480" src="https://www.youtube.com/embed/E_XYIcS4w9k" frameborder="0" allowfullscreen></iframe>
 
-## FPGA
-
+## FPGA:
 ## PLL
 Our first task with the FPGA was to create a Phase-Locked-Loop (PLL) with our three clock signals: 24MHz, 25MHz, and 50MHz. A PLL is used to prevent clock skew between the three clocks, making sure they are in phase the whole time. Following the steps provided in the lab, we successfully created our own PLL with these clock signals. The 24MHz clock signal is used for the Camera-Arduino communication, the 25MHz signal is used as the read clock for the memory buffer, and the 50MHz signal is used as the write clock for the memory buffer.
 
@@ -91,3 +90,12 @@ Now that we can display an image, our next step is to identify the image. For st
 
 ## Camera-FPGA Communication:
 The Camera will provide the FPGA with 11 inputs on pins GPIO_1[9-27]  (odd numbers only). Eight of these inputs are the camera pixel data in RGB 565 format sent across two bytes. This data is downsampled and then written to our M9K RAM. The three remaining inputs are HREF, PCLK, and VSYNC. PLCK is used to set the rate at which new bytes of data arrive to the FPGA, with new bytes arriving on the positive edge of PCLK. A positive edge of HREF means that the next bytes of data are a new row of pixels. A positive edge of VSYNC signals a new image entirely. We use these inputs to properly update our X_ADDR and Y_ADDR to write to the proper addresses for each pixel.
+
+With all the connections completed, we were able to display the color bar test image on the monitor. This was done by using the Arduino to set the camera registers and then using our FPGA code to properly downsample then write the pixel data into M9K memory.  This was our resulting image:
+
+![](images/lab4/colorBar.JPG){:height="400px" width="700px"}
+
+There is still a bit of noise, but we found this to be sufficient and moved onto our color detection. This is our robot detecting red, blue, and no treasures. You can see by the Arduino output that the shape is not necessarily correct, but the color is.
+
+The following video shows our color detection at work:
+<iframe width="640" height="480" src="https://www.youtube.com/embed/bJfOjuqlbkk" frameborder="0" allowfullscreen></iframe>
