@@ -61,7 +61,8 @@ Servo servoRight; //right servo
 int lsensorR; //right line sensor
 int lsensorL; //left line sensor
 int lsensorM; //middle line sensor
-int line_threshold=945; //less than is white, greater than is black
+int line_threshold_m=800; //less than is white, greater than is black
+int line_threshold = 950;
 
 
 
@@ -70,9 +71,9 @@ int line_threshold=945; //less than is white, greater than is black
 int l_wall_sensor; //left wall sensor
 int r_wall_sensor; //right wall sensor
 int f_wall_sensor; //front wall sensor
-int f_wall_threshold=178;//less is no wall, > is wall
-int l_wall_threshold = 138;
-int r_wall_threshold = 150;
+int f_wall_threshold=100;//less is no wall, > is wall
+int l_wall_threshold = 170;
+int r_wall_threshold = 180;
 
 //average array 
 int avg_reading=0;
@@ -169,7 +170,7 @@ void left_turn(){
   mazeMsg |= dir;
   servoLeft.write(0);
   servoRight.write(0);
-  delay(610); // was 670
+  delay(620); // was 670
 }
 
 void uturn(){
@@ -213,7 +214,7 @@ void hard_left(){
 }
 //move forward
 void forward(){
-  servoRight.write(0);
+  servoRight.write(80);
   servoLeft.write(180);  
   rightWallSensorDir = (dir+1)%4;
   leftWallSensorDir = (dir+3)%4;
@@ -229,8 +230,8 @@ void pause(){
 //returns true if white, false if not white
 bool leftLineSensor(){
   lsensorL = analogRead(A1);
-  Serial.println("Left");
-  Serial.println(lsensorL);
+  //Serial.println("Left");
+  //Serial.println(lsensorL);
   if(lsensorL<line_threshold){
     return true;
     }
@@ -238,8 +239,8 @@ bool leftLineSensor(){
 }
 bool rightLineSensor(){
   lsensorR = analogRead(A3);
-  Serial.println("Right");
-  Serial.println(lsensorR);
+  //Serial.println("Right");
+  //Serial.println(lsensorR);
   if(lsensorR<line_threshold){
     return true;
     }
@@ -247,10 +248,10 @@ bool rightLineSensor(){
 }
 bool middleLineSensor(){
   lsensorM = analogRead(A2);
-  Serial.println("Middle");
-  Serial.println(lsensorM);
-  Serial.println("\n\n");
-  if(lsensorM<line_threshold){
+  //Serial.println("Middle");
+  //Serial.println(lsensorM);
+  //Serial.println("\n\n");
+  if(lsensorM<line_threshold_m){
     return true;
     }
    return false;
@@ -318,7 +319,7 @@ bool front_wall_detect(){
   f_wall_sensor=average();
   
   //Serial.println("front wall sensor: "+String(f_wall_sensor));
-  //Serial.println(f_wall_sensor);
+  Serial.println(f_wall_sensor);
   if(f_wall_sensor>f_wall_threshold){
     //Serial.println("front wall detected");
     //wall information to mazeMsg
@@ -523,55 +524,6 @@ bool sendRadio(){
 
 
 
-
-
-
-
-
-//RIGHT WALL FOLLOW-----------------------------------------------------------------------------------------
-void rightWallFollow(){
-      //no wall in front, go forward
-      bool f = front_wall_detect();
-      //delay(10);
-      bool r = right_wall_detect();
-      //delay(10);
-      bool l = left_wall_detect();
-      //delay(10);
-      if(!f){
-            forward();  
-          }
-          //if you can turn right, then do it
-      else if(!r){
-        right_turn();
-        }
-      //wall on front and right, turn left
-      else if(!l && f && r){
-        //digitalWrite(green_led, HIGH);
-        left_turn();
-        //digitalWrite(green_led, LOW);
-      }
-   //walls on left and front
-      else if(l && !r && f){
-        //digitalWrite(green_led, HIGH);
-        right_turn();
-        //digitalWrite(green_led, LOW);
-      }
-      //walls everywhere. Uturn?
-      else if(l && r && f){
-        //digitalWrite(green_led, HIGH);
-        uturn();
-        //digitalWrite(green_led, LOW);
-      }
-      
-}
-
-
-
-
-
-
-
-
 //INTERSECTION----------------------------------------------------------------------------
 void atIntersection(){
   //if intersection
@@ -638,29 +590,5 @@ void setup() {
 void loop() {
     atIntersection();
     lineFollow();
-    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
