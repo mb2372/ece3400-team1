@@ -438,18 +438,9 @@ void turnToDir(int cardinal){
 void dfs(){
   //detect walls
   bool f = front_wall_detect();
-  //Serial.println("Front Wall: " + String(f)); 
-  //Serial.println("Front Wall Sensor: "+String(f_wall_sensor));
-  //delay(10);
   bool r = right_wall_detect();
-  //Serial.println("Right Wall: " + String(r));
-  //Serial.println("Right Wall Sensor: "+String(r_wall_sensor));
-  //delay(10);
   bool l = left_wall_detect();
- // Serial.println("Left Wall: " + String(l));
-  //Serial.println("Left Wall Sensor: "+String(l_wall_sensor));
-  //Serial.println("");
-  //delay(10);
+
   //given walls, choose a direction to go SENW priority
   //if not bottom row and no wall to othe south and south is unvisited, then visit
  // Serial.println(mazeMsg,BIN);
@@ -485,7 +476,7 @@ void dfs(){
        turnToDir(newDir);
     }
     else{
-      forward();  
+      uturn();  
     }
   }
 
@@ -495,6 +486,78 @@ void dfs(){
 
 
 
+//updated dfs-------------------------------------------------------------------------------------------
+void dfs2(){
+  //detect walls
+  bool f = front_wall_detect();
+  bool r = right_wall_detect();
+  bool l = left_wall_detect();
+
+  //given walls, choose a direction to go SENW priority
+
+ // Serial.println(mazeMsg,BIN);
+  byte n = (mazeMsg & 0b00100000);
+  byte e = (mazeMsg & 0b00010000);
+  byte s = (mazeMsg & 0b00001000);
+  byte w = (mazeMsg & 0b00000100);
+
+//keep moving south
+  if(row<numRows-1 && (s == 0) && visited[row+1][col]==0 && dir==south){
+    turnToDir(south);
+    stack.push(dir);
+  }
+  
+  //keep moving east
+  else if(col<numCols-1 && (e == 0) && visited[row][col+1]==0 && dir==east){
+    turnToDir(east);
+    stack.push(dir);  
+  }
+  //keep moving north
+  else if(row>0 && (n == 0) && visited[row-1][col]==0 && dir == north){
+      turnToDir(north);
+      stack.push(dir);
+   }
+  //keep moving west
+  else if(col>0 && (w ==0) && visited[row][col-1]==0 && dir==west){
+    turnToDir(west);
+    stack.push(dir);  
+  }
+
+   //if not bottom row and no wall to othe south and south is unvisited, then visit
+  else if(row<numRows-1 && (s == 0) && visited[row+1][col]==0){
+    turnToDir(south);
+    stack.push(dir);
+  }
+  
+  //if not rightmost col and no wall to the east and east is unvisited, then visit
+  else if(col<numCols-1 && (e == 0) && visited[row][col+1]==0){
+    turnToDir(east);
+    stack.push(dir);  
+  }
+  //if not top row and no wall to the north and north is unvisited, then visit
+  else if(row>0 && (n == 0) && visited[row-1][col]==0){
+      turnToDir(north);
+      stack.push(dir);
+   }
+
+  else if(col>0 && (w ==0) && visited[row][col-1]==0){
+    turnToDir(west);
+    stack.push(dir);  
+  }
+  //all else fails go the opposite direction of most recent dir
+  else{
+    if(!stack.isEmpty()){
+       int newDir = (stack.pop() + 2) % 4;
+       turnToDir(newDir);
+    }
+    else{
+      uturn();  
+    }
+  }
+
+  //update position and visited tiles
+  updatePosition();
+}
 
 
 //SEND RADIO INFORMATION-------------------------------------------------------------------------------------------
