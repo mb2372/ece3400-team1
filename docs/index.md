@@ -22,3 +22,4 @@ Meet our robot!
 
 
 #### [Team Contract](./team_contract/team_contract.pdf)
+#### [Ethics](./ethics/ethics.pdf)
