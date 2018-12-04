@@ -33,18 +33,7 @@ boolean visited[2][3] = {
   {0,0,0},
 };
 
-/*
-struct node{
-  bool nWall;
-  bool eWall;
-  bool sWall;
-  bool wWall;
-  bool visited;
-  
-};
-node Node;
 
-node grid[5][4];*/
 //-------------------------------------------------------------------------
 //SERVOS
 //<90 is clockwise
@@ -108,7 +97,7 @@ byte treasureMsg=0;
 
 //microphone stuff. In analog A4---------------------------------------------------------------------------------
 int mic;
-int mic_threshold = 50;
+int mic_threshold = 45;
 
 //SETUP METHODS-----------------------------------------------------------------------------------------------
 void servoSetup(){
@@ -350,17 +339,34 @@ void wallsToRadio(int d){
 }
 //LINE FOLLOWING--------------------------------------------------------------------------------
 void lineFollow(){
+  //true if white and false if not white
+  
   //slight left correction
-  if(leftLineSensor() && !rightLineSensor()&& middleLineSensor()) slight_left();
+  //if(leftLineSensor() && !rightLineSensor()&& middleLineSensor()) slight_left();
   //slight right correction
-  if(!leftLineSensor() && rightLineSensor()&& middleLineSensor()) slight_right();
+  //if(!leftLineSensor() && rightLineSensor()&& middleLineSensor()) slight_right();
   //hard left correction
-  if(leftLineSensor() && !rightLineSensor()&& !middleLineSensor()) hard_left();
+  //if(leftLineSensor() && !rightLineSensor()&& !middleLineSensor()) hard_left();
   //hard right correction
-  if(!leftLineSensor() && rightLineSensor()&& !middleLineSensor()) hard_right();
+  //if(!leftLineSensor() && rightLineSensor()&& !middleLineSensor()) hard_right();
+  
   //go forward
-  if(!leftLineSensor() && !rightLineSensor()&& middleLineSensor()) forward();
-  if(!leftLineSensor() && !rightLineSensor()&& !middleLineSensor()) forward();
+  if(!leftLineSensor() && !rightLineSensor()&& middleLineSensor()){
+    forward();
+    } 
+  if(!leftLineSensor() && !rightLineSensor()&& !middleLineSensor()){
+    forward();
+    } 
+
+  //left is white and right is not white, need to tilt left
+  if(leftLineSensor() && !rightLineSensor()){
+    slight_left();
+    } 
+  //left is not white and right is white, need to tilt right
+  if(!leftLineSensor() && rightLineSensor()){
+    slight_right();
+    }
+  
        
 }
 
@@ -423,16 +429,16 @@ void turnToDir(int cardinal){
 void dfs(){
   //detect walls
   bool f = front_wall_detect();
-  Serial.println("Front Wall: " + String(f)); 
+  //Serial.println("Front Wall: " + String(f)); 
   //Serial.println("Front Wall Sensor: "+String(f_wall_sensor));
   //delay(10);
   
   bool r = right_wall_detect();
-  Serial.println("Right Wall: " + String(r));
+  //Serial.println("Right Wall: " + String(r));
   //Serial.println("Right Wall Sensor: "+String(r_wall_sensor));
   //delay(10);
   bool l = left_wall_detect();
-  Serial.println("Left Wall: " + String(l));
+  //Serial.println("Left Wall: " + String(l));
   //Serial.println("Left Wall Sensor: "+String(l_wall_sensor));
   //Serial.println("");
   //delay(10);
@@ -508,55 +514,6 @@ bool sendRadio(){
   
   return ok;
 }
-
-
-
-
-
-
-
-
-//RIGHT WALL FOLLOW-----------------------------------------------------------------------------------------
-void rightWallFollow(){
-      //no wall in front, go forward
-      bool f = front_wall_detect();
-      //delay(10);
-      bool r = right_wall_detect();
-      //delay(10);
-      bool l = left_wall_detect();
-      //delay(10);
-      if(!f){
-            forward();  
-          }
-          //if you can turn right, then do it
-      else if(!r){
-        right_turn();
-        }
-      //wall on front and right, turn left
-      else if(!l && f && r){
-        //digitalWrite(green_led, HIGH);
-        left_turn();
-        //digitalWrite(green_led, LOW);
-      }
-   //walls on left and front
-      else if(l && !r && f){
-        //digitalWrite(green_led, HIGH);
-        right_turn();
-        //digitalWrite(green_led, LOW);
-      }
-      //walls everywhere. Uturn?
-      else if(l && r && f){
-        //digitalWrite(green_led, HIGH);
-        uturn();
-        //digitalWrite(green_led, LOW);
-      }
-      
-}
-
-
-
-
-
 
 
 
