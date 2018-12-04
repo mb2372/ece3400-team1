@@ -101,7 +101,7 @@ byte treasureMsg=0;
 
 //microphone stuff. In analog A4---------------------------------------------------------------------------------
 int mic;
-int mic_threshold = 45;
+int mic_threshold = 20;
 
 //SETUP METHODS-----------------------------------------------------------------------------------------------
 void servoSetup(){
