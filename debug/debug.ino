@@ -7,6 +7,10 @@
 #include "nRF24L01.h"
 #include "RF24.h"
 #include <StackArray.h>
+//IR boolean for update position stuff------------------------------------------
+bool IR = false;
+
+
 //DFS data structures------------------------------------------------------------
 StackArray<int> stack;
 int row = 0;
@@ -389,6 +393,8 @@ void mic_read(){
 
 // update robot position and squares visited-----------------------------------------------------------------
 void updatePosition() {
+  //only update position if no IR detected
+  if(IR==false){
     if (dir == north) {
       row=row-1;
       visited[row+1][col] = 1;
@@ -405,6 +411,12 @@ void updatePosition() {
       col=col-1;
       visited[row][col+1] = 1;
     }
+ }
+ //set IR back to false
+ if(IR==true){
+  IR = false; 
+ }
+    
 }
 
 //face the robot in the desired cardinal direciton-------------------------------------------------------------
@@ -527,7 +539,15 @@ void atIntersection(){
     delay(330);
     pause();
     //Serial.println(mazeMsg);
-    resetMazeMsg();
+
+
+    
+    resetMazeMsg();//do we need a ir_detect here?
+
+
+
+
+    
     //pause();//this pause and delay is for reading wall time
     //delay(20);
     
@@ -559,7 +579,9 @@ void resetMazeMsg(){
 //IR
 void ir_detect(){
   double ir_val=analogRead(A0);
-  if(ir_val<720){
+  if(ir_val<=720){
+    IR = true;
+    mazeMsg |= 0b01000000;
     uturn();
     stack.push(dir);
     //updatePosition();
