@@ -36,6 +36,7 @@ if (radio.available()) {
    
    
    //get direction data from robot and update position
+ 
    byte dir = mazeInfo;
    dir &= 0b00000011;
    //Serial.println(dir);
@@ -67,7 +68,9 @@ if (radio.available()) {
    //update the guiMsg
    guiMsg = String(row)+","+String(col) + guiMsg;            
    Serial.println(guiMsg);
-   updatePosition(dir);
+   
+    updatePosition(dir);
+   
    //Serial.println("t info: "+String(treasureInfo));
    //Serial.println("maze info: "+String(mazeInfo));
    //Serial.println();

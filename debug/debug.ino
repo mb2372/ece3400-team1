@@ -7,18 +7,16 @@
 #include "nRF24L01.h"
 #include "RF24.h"
 #include <StackArray.h>
-//IR boolean for update position stuff------------------------------------------
+
 bool IR = false;
-
-
 //DFS data structures------------------------------------------------------------
 StackArray<int> stack;
 int row = 0;
 int col = 0;
-int numRows = 2;
-int numCols = 3;
+int numRows = 9;
+int numCols = 9;
 
-/*
+
 boolean visited[9][9] = {
   {0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0},
@@ -30,13 +28,13 @@ boolean visited[9][9] = {
   {0,0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0,0}, 
 };
-*/
 
+/*
 boolean visited[2][3] = {
   {0,0,0},
   {0,0,0},
 };
-
+*/
 
 //-------------------------------------------------------------------------
 //SERVOS
@@ -101,7 +99,7 @@ byte treasureMsg=0;
 
 //microphone stuff. In analog A4---------------------------------------------------------------------------------
 int mic;
-int mic_threshold = 20;
+int mic_threshold = 40;
 
 //SETUP METHODS-----------------------------------------------------------------------------------------------
 void servoSetup(){
@@ -185,7 +183,7 @@ void slight_right(){
 //correction, not a turn
 void hard_right(){
    servoRight.write(92);
-   servoLeft.write(94);
+   servoLeft.write(98);
    delay(120);
 }
 //correction, not a turn
@@ -353,6 +351,15 @@ void lineFollow(){
   //if(leftLineSensor() && !rightLineSensor()&& !middleLineSensor()) hard_left();
   //hard right correction
   //if(!leftLineSensor() && rightLineSensor()&& !middleLineSensor()) hard_right();
+
+  //left is white and right is not white, need to tilt left
+  if(leftLineSensor() && !rightLineSensor()){
+    slight_left();
+    } 
+  //left is not white and right is white, need to tilt right
+  if(!leftLineSensor() && rightLineSensor()){
+    hard_right();
+    }
   
   //go forward
   if(!leftLineSensor() && !rightLineSensor()&& middleLineSensor()){
@@ -361,18 +368,9 @@ void lineFollow(){
   if(!leftLineSensor() && !rightLineSensor()&& !middleLineSensor()){
     forward();
     } 
-
-  //left is white and right is not white, need to tilt left
-  if(leftLineSensor() && !rightLineSensor()){
-    slight_left();
-    } 
-  //left is not white and right is white, need to tilt right
-  if(!leftLineSensor() && rightLineSensor()){
-    slight_right();
-    }
-  
-       
+      
 }
+
 
 
 //METHOD FOR CHECKING MICROPHONE TO KNOW WHEN WE START
@@ -393,8 +391,6 @@ void mic_read(){
 
 // update robot position and squares visited-----------------------------------------------------------------
 void updatePosition() {
-  //only update position if no IR detected
-  if(IR==false){
     if (dir == north) {
       row=row-1;
       visited[row+1][col] = 1;
@@ -411,12 +407,6 @@ void updatePosition() {
       col=col-1;
       visited[row][col+1] = 1;
     }
- }
- //set IR back to false
- if(IR==true){
-  IR = false; 
- }
-    
 }
 
 //face the robot in the desired cardinal direciton-------------------------------------------------------------
@@ -462,8 +452,30 @@ void dfs(){
   byte e = (mazeMsg & 0b00010000);
   byte s = (mazeMsg & 0b00001000);
   byte w = (mazeMsg & 0b00000100);
+
+  if(row<numRows-1 && (s == 0) && visited[row+1][col]==0 && dir==south){
+    turnToDir(south);
+    stack.push(dir);
+  }
+  
+  //if not rightmost col and no wall to the east and east is unvisited, then visit
+  else if(col<numCols-1 && (e == 0) && visited[row][col+1]==0 && dir==east){
+    turnToDir(east);
+    stack.push(dir);  
+  }
+  //if not top row and no wall to the north and north is unvisited, then visit
+  else if(row>0 && (n == 0) && visited[row-1][col]==0 && dir ==north){
+      turnToDir(north);
+      stack.push(dir);
+   }
+
+  else if(col>0 && (w ==0) && visited[row][col-1]==0 && dir==west){
+    turnToDir(west);
+    stack.push(dir);  
+  }
+
  
-  if(row<numRows-1 && (s == 0) && visited[row+1][col]==0){
+  else if(row<numRows-1 && (s == 0) && visited[row+1][col]==0){
     turnToDir(south);
     stack.push(dir);
   }
@@ -529,6 +541,12 @@ bool sendRadio(){
 
 
 
+
+
+
+
+
+
 //INTERSECTION----------------------------------------------------------------------------
 void atIntersection(){
   //if intersection
@@ -539,19 +557,16 @@ void atIntersection(){
     delay(330);
     pause();
     //Serial.println(mazeMsg);
-
-
-    
-    resetMazeMsg();//do we need a ir_detect here?
-
-
-
-
-    
+    resetMazeMsg();
     //pause();//this pause and delay is for reading wall time
     //delay(20);
     
     dfs();
+    ir_detect();
+    while(IR==true){
+      pause();  
+      ir_detect();
+    }
     //rightWallFollow();
     pause();
     int failCount = 0;
@@ -579,12 +594,13 @@ void resetMazeMsg(){
 //IR
 void ir_detect(){
   double ir_val=analogRead(A0);
-  if(ir_val<=720){
+  if(ir_val<650){
+    pause();
     IR = true;
-    mazeMsg |= 0b01000000;
-    uturn();
-    stack.push(dir);
     //updatePosition();
+    }
+   else{
+    IR = false;
     }
   }
 
@@ -612,31 +628,18 @@ void setup() {
 //LOOP-------------------------------------------------------------------------------------------------------
 void loop() {
     ir_detect();
+    while(IR==true){
+      pause();  
+      ir_detect();
+    }
     atIntersection();
     ir_detect();
+    while(IR==true){
+      pause();  
+      ir_detect();
+    }
     lineFollow();
+    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
