@@ -31,22 +31,13 @@ if (radio.available()) {
   byte treasureInfo = msg[0];
 
    //maze info has direction, walls, robot               
-   byte mazeInfo = msg[1];
-   //Serial.println("received data");
-   
-   
+   byte mazeInfo = msg[1];  
    //get direction data from robot and update position
- 
    byte dir = mazeInfo;
    dir &= 0b00000011;
-   //Serial.println(dir);
-   
-
    //get wall data from robot
    byte walls = mazeInfo;
    walls &= 0b00111100;
-   
-   
    updateWalls(walls);
 
    //get robot presence
