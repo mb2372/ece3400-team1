@@ -99,7 +99,7 @@ byte treasureMsg=0;
 
 //microphone stuff. In analog A4---------------------------------------------------------------------------------
 int mic;
-int mic_threshold = 40;
+int mic_threshold = 43;
 
 //SETUP METHODS-----------------------------------------------------------------------------------------------
 void servoSetup(){
@@ -452,7 +452,7 @@ void dfs(){
   byte e = (mazeMsg & 0b00010000);
   byte s = (mazeMsg & 0b00001000);
   byte w = (mazeMsg & 0b00000100);
-
+/*
   if(row<numRows-1 && (s == 0) && visited[row+1][col]==0 && dir==south){
     turnToDir(south);
     stack.push(dir);
@@ -474,8 +474,8 @@ void dfs(){
     stack.push(dir);  
   }
 
- 
-  else if(row<numRows-1 && (s == 0) && visited[row+1][col]==0){
+ */
+  if(row<numRows-1 && (s == 0) && visited[row+1][col]==0){
     turnToDir(south);
     stack.push(dir);
   }
