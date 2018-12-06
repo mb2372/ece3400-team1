@@ -10,9 +10,11 @@ The first component of our treasure detection is to determine if a treasure is p
 If a pixel is determined to be red or blue, we increment the appropriate counter (red_count or blue_count). We then check these counters against a threshold to determine if a treasure is present. If there are more than 5000 red pixels on screen, we determine a red treasure to be present. If there are more than 7000 blue/dark pixels on screen, we determine a blue treasure to be present. Our condition on detecting blue pixels can lead us to seeing any dark image as a blue treasure, but in a maze of white walls we believe this will not be a major issue. If neither red_count or blue_count meets the threshold, we determine there to be no treasure present and set our RESULT value.
 
 Here is our reset condition:
+
 ![](images/resetCondition.JPG){:height="480px" width="640px"}
 
-Here are our conditions for checking the color of a pixel and the color of a treasure (where THRESHOLD is 7000):
+Here are our conditions for checking the color of a pixel and the color of a treasure (THRESHOLD is 7000):
+
 ![](images/colorCheck.JPG){:height="480px" width="640px"}
 
 
