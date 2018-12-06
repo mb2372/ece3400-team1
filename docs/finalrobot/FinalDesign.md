@@ -84,7 +84,7 @@ while(starting==false){//loop while we have not started
 On the final robot design, we decided to not use the provided FFT library to read the 6kHz signal from the IR hat as we ran into memory issues on the Arduino as well as issues with timer interrupts. Instead we decided to use the analog output of our circuit as an input to the Arduino directly. 
 
 We started with a simple phototransistor circuit as shown below:
-![](images/photoR.JPG){:height="480px" width="640px"}
+![](images/photoR.JPG){:height="320px" width="240px"}
 
 We then added an inverting amplifier circuit and an active low pass filter shown below: 
 ![](images/IR.JPG){:height="480px" width="640px"}
@@ -105,9 +105,10 @@ void ir_detect(){
 ```
 
 ## GUI/ Radio
+
 At intersections, the robot would transmit encoded information about the maze to the GUI through the radios on the robot and on the base station connected to a laptop. The radios are directly attached to the new Arduino boards we acquired for the robot. Since the old Arduino boards did not supply enough current to the radios, a power supply was needed. The new Arduinos are able to supply sufficient current to eliminate the use of the power supply. The radio on the final robot is circled in red on the image below.
 
-![](images/radio.JPG){:height="480px" width="640px"}
+![](images/radio.JPG){:height="640px" width="480px"}
 
 
 The bit masking was also updated to more efficiently transmit information. Unfortunately, we were not able to implement our camera and FPGA on our robot due to space restraints on our robot. The existing circuit boards, IR hat, batteries, and Arduino consumed almost all the space we had available on the robot. Because of this, the robot transmitted one less byte per intersection since treasure information is no longer needed. The information sent over is the direction the robot is moving, the position of the walls, and the presence of other robots. The direction the robot is heading is automatically updated by the turning commands. For instance, if the robot is heading north and the right turn command is called, then the direction variable is automatically updated from north to east. The walls are updated in a similar fashion. The left wall direction is always 90 degrees to the left of the direction the robot is moving and the right wall direction is always 90 degrees to the right of the direction the robot is moving. These are updated by the turning commands as well. Thus, when the wall detection methods are called, the walls are in the correct cardinal direction. The new bit masking becomes:
@@ -212,7 +213,7 @@ Despite having the camera and FPGA working off of the robot, we chose not to imp
 
 We only marked the locations of pixels in the three horizontal bars in the middle of the screen. If the top bar had less pixels of a certain color than the middle bar, which in turn had less than the bottom bar, we determined the treasure to be a triangle. If the middle bar had the most pixels, the treasure was a diamond. Otherwise, it was a square. If neither color met the pixel threshold, we said no treasure was present. To make our image processing more consistent, we used a pixel threshold (SHAPE) when comparing the bars. If the middle bar was greater than the other two by only one pixel, then the image is most likely an off center square, but our logic would mark it as a diamond. To avoid this, a threshold of 100 pixels was added to the bar that should have less pixels. This way, the middle bar must have at least 100 more pixels of a color than the top and bottom bars.
 
-![](images/shape.JPG){:height="480px" width="640px"}
+![](images/shape.JPG){:height="320px" width="240px"}
 
 Even with this correction, we noticed we still had some issues with proper detection since the FPGA was not always right the first time, but was right a majority of the time. To deal with this, we took 30 results from the FPGA and averaged them. This was done by having a counter on the Arduino set to 0 initially. We would add a value to it depending on the shape and color detected, and then average this value.
 
@@ -247,11 +248,15 @@ Below is a video of one of our runs.
 Below are various shots of our final robot design
 
 
-![](images/back.JPG){:height="640px" width="480px"}
-![](images/front.JPG){:height="640px" width="480px"}
-![](images/left.JPG){:height="640px" width="480px"}
-![](images/right.JPG){:height="640px" width="480px"}
-![](images/top.JPG){:height="640px" width="480px"}
+![](images/back.JPG){:height="320px" width="240px"}
+
+![](images/front.JPG){:height="320px" width="240px"}
+
+![](images/left.JPG){:height="320px" width="240px"}
+
+![](images/right.JPG){:height="320px" width="240px"}
+
+![](images/top.JPG){:height="320px" width="240px"}
 
 
 
